@@ -3,74 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrolling Text Change</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <title>Horizontal Scroll Website</title>
     <style>
-        body {
-            font-family: 'Outfit', sans-serif;
+        * {
             margin: 0;
-            height: 101vh; /* Make the body taller to allow scrolling */
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            overflow-x: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            background: #282c34;
-            color: white;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 50px 0;
+            white-space: nowrap;
+        }
+
+        .container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .item {
+            display: inline-block;
+            width: 80vw;
+            height: 100vh;
+            padding: 20px;
+            white-space: normal;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            margin-right: 20px;
+            background-color: #F6F6F2;
+            border-radius: 10px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .text {
+            margin-top: 20px;
+            font-size: 18px;
             text-align: center;
         }
 
-        .text-container {
-            font-size: 3rem;
-            opacity: 0; /* Start hidden */
-            transition: opacity 1s ease-in-out; /* Smooth opacity transition */
-            position: absolute; /* Center the text */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .title {
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .visible {
-            opacity: 1; /* Show when visible */
+        .scroll-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .scroll-left {
+            left: 10px;
+        }
+
+        .scroll-right {
+            right: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="text-container" id="text">Nik Kranjec</div>
+    <button class="scroll-btn scroll-left" onclick="scrollLeft()">←</button>
+    <button class="scroll-btn scroll-right" onclick="scrollRight()">→</button>
+
+    <div class="container" id="scrollContainer">
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 1">
+            </div>
+            <div class="text">
+                <div class="title">01</div>
+                <p>Example Text for Item 1</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 2">
+            </div>
+            <div class="text">
+                <div class="title">02</div>
+                <p>Example Text for Item 2</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 3">
+            </div>
+            <div class="text">
+                <div class="title">03</div>
+                <p>Example Text for Item 3</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 4">
+            </div>
+            <div class="text">
+                <div class="title">03</div>
+                <p>Example Text for Item 4</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 5">
+            </div>
+            <div class="text">
+                <div class="title">03</div>
+                <p>Example Text for Item 5</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 6">
+            </div>
+            <div class="text">
+                <div class="title">03</div>
+                <p>Example Text for Item 6</p>
+            </div>
+        </div>
+        <div class="item">
+            <div class="image-container">
+                <img src="https://via.placeholder.com/800x1200" alt="Placeholder 7">
+            </div>
+            <div class="text">
+                <div class="title">03</div>
+                <p>Example Text for Item 7</p>
+            </div>
+        </div>
+        <!-- Add more items similarly -->
+    </div>
 
     <script>
-        const textElement = document.getElementById('text');
-        const texts = ["Nik Kranjec", "Creative Director", "Videographer", "Brand Strategist"];
-        let currentIndex = 0;
+        const container = document.getElementById('scrollContainer');
 
-        const changeText = () => {
-            textElement.classList.remove('visible'); // Hide current text
-            setTimeout(() => {
-                currentIndex++;
-                if (currentIndex >= texts.length) {
-                    currentIndex = 0; // Reset to first text
-                }
-                textElement.innerText = texts[currentIndex];
-                textElement.classList.add('visible'); // Show new text
-            }, 1000); // Wait for fade out before changing text
-        };
+        function scrollLeft() {
+            container.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+        }
 
-        // Change text when scrolling
-        window.onscroll = () => {
-            const scrollPosition = window.scrollY;
-
-            // Change text every 500px of scroll
-            if (scrollPosition % 500 === 0) {
-                changeText();
-            }
-        };
-
-        // Initialize text on page load
-        window.onload = () => {
-            textElement.classList.add('visible'); // Show initial text
-        };
+        function scrollRight() {
+            container.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+        }
     </script>
+
 </body>
 </html>
