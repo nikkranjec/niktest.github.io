@@ -185,8 +185,8 @@
     const scrollY = window.scrollY;
     const appearStart = 500;
     const appearEnd = 800;
-    const disappearStart = 1200;
-    const disappearEnd = 1500;
+    const disappearStart = 1500;
+    const disappearEnd = 1700;
 
     if (scrollY < appearStart) {
       // Before animation
@@ -228,7 +228,7 @@
     } else {
       // After disappear
       scrollText.style.opacity = 0;
-      scrollText.style.transform = "translate(-50%, 40px)";
+      scrollText.style.transform = "translate(50%, 40px)";
       words.forEach((w) => {
         w.style.opacity = 0;
         w.classList.remove("animate-font");
