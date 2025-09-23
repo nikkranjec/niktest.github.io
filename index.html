@@ -98,44 +98,40 @@ body {
 
 .decrypted-char { display: inline-block; white-space: pre; }
 
-  #socialContainer {
+
+  /* social buttons */
+#socialsContainer {
   position: fixed;
-  bottom: 50px;
   left: 50%;
-  transform: translateX(-50%) translateY(40px);
+  bottom: 10%;             /* distance from bottom of screen */
+  transform: translateX(-50%);
   display: flex;
-  gap: 15px;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  gap: 15px;               /* space between buttons */
+  opacity: 0;              /* start hidden, fade in later */
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .social-btn {
-  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;        /* crop image to circle */
+  display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   background: white;
-  color: black;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 18px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.social-btn img {
+  width: 70%;              /* scale image inside button */
+  height: 70%;
+  object-fit: contain;
 }
 
 .social-btn:hover {
   transform: scale(1.2);
-}
-
-#socialText {
-  margin-top: 10px;
-  color: white;
-  font-size: 14px;
-  text-align: center;
-  opacity: 0.8;
+  background: #f0f0f0;    /* optional hover color */
 }
   
 </style>
@@ -169,12 +165,17 @@ body {
   </span>
 </div>
 
-<!-- Social Buttons -->
-<div id="socialContainer">
-  <a href="https://twitter.com" target="_blank" class="social-btn">T</a>
-  <a href="https://instagram.com" target="_blank" class="social-btn">I</a>
-  <a href="https://linkedin.com" target="_blank" class="social-btn">L</a>
-  <p id="socialText">Follow me on socials</p>
+<!-- Social buttons container -->
+<div id="socialsContainer">
+  <a href="https://twitter.com" class="social-btn" target="_blank">
+    <img src="twitter-icon.png" alt="Twitter">
+  </a>
+  <a href="https://instagram.com" class="social-btn" target="_blank">
+    <img src="instagram-icon.png" alt="Instagram">
+  </a>
+  <a href="https://linkedin.com" class="social-btn" target="_blank">
+    <img src="linkedin-icon.png" alt="LinkedIn">
+  </a>
 </div>
   
 <!-- Noise overlay -->
@@ -310,18 +311,18 @@ window.addEventListener("scroll", ()=>{
     paragraph.style.transform = `translate(-50%, ${-paraMoveDistance}px)`;
   }
 });
-
-  const socialContainer = document.getElementById("socialContainer");
+  
+/* ------------------ social buttons ------------------ */
+  const socials = document.getElementById("socialsContainer");
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
-  const scrollHeight = document.body.scrollHeight - window.innerHeight;
-
-  if(scrollY >= scrollHeight - 50){ // near bottom
-    socialContainer.style.opacity = 1;
-    socialContainer.style.transform = "translateX(-50%) translateY(0)";
+  const trigger = paraAppearEnd + 50; // after paragraph fully visible
+  if (scrollY > trigger) {
+    socials.style.opacity = 1;
+    socials.style.transform = "translateX(-50%) translateY(0)";
   } else {
-    socialContainer.style.opacity = 0;
-    socialContainer.style.transform = "translateX(-50%) translateY(40px)";
+    socials.style.opacity = 0;
+    socials.style.transform = "translateX(-50%) translateY(20px)";
   }
 });
 </script>
