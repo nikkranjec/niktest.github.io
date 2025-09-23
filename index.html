@@ -67,22 +67,28 @@
   const elements = [
     {el: document.getElementById('elem1'), speed: 0.5, scale: 0.8, rotation: 20},
     {el: document.getElementById('elem2'), speed: 0.3, scale: 1.3, rotation: 20},
-    {el: document.getElementById('elem3'), speed: 0.7},
-    {el: document.getElementById('elem4'), speed: 0.4},
-    {el: document.getElementById('elem5'), speed: 0.6},
+    {el: document.getElementById('elem3'), speed: 0.7, scale: 1, rotation: 0},
+    {el: document.getElementById('elem4'), speed: 0.4, scale: 1, rotation: 0},
+    {el: document.getElementById('elem5'), speed: 0.6}, scale: 1, rotation: 0,
   ];
-
+  
 window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
+    const scrollY = window.scrollY;
 
-  elements.forEach(({el, speed, baseScale, rotation}) => {
-    const dynamicScale = Math.max(0.5, 1 - scrollY * 0.0005);
-    const scale = dynamicScale * baseScale; // apply base scale
-    const translateY = -scrollY * speed;
+    elements.forEach(({el, speed, baseScale, baseRotation}) => {
+      // 🔹 dynamic parallax movement
+      const translateY = -scrollY * speed;
 
-    el.style.transform = `translateY(${translateY}px) scale(${scale}) rotate(${rotation}deg)`;
+      // 🔹 dynamic scaling based on scroll
+      const scrollScale = Math.max(0.5, 1 - scrollY * 0.0005);
+
+      // 🔹 combine base + scroll effects
+      const finalScale = scrollScale * baseScale;
+      const finalRotation = baseRotation; // stays constant
+
+      el.style.transform = `translateY(${translateY}px) scale(${finalScale}) rotate(${finalRotation}deg)`;
+    });
   });
-});
 </script>
 
 </body>
