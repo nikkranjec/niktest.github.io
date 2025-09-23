@@ -60,6 +60,19 @@
     opacity: 0;
   }
 
+  .love-wrapper {
+  display: inline-block;
+  width: 220px; /* adjust to the widest 'love' font */
+  text-align: center;
+  position: relative;
+}
+
+.scroll-word.love {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
   /* Font cycling for the word "love" */
  @keyframes fontCycle {
   0% { font-family: 'EB Garamond', serif; }
@@ -122,7 +135,9 @@
 <div class="scroll-text-container">
   <span class="scroll-word" id="word1">reincarnated</span>
   <span class="scroll-word" id="word2">with</span>
-  <span class="scroll-word love" id="word3">Love</span>
+  <span class="love-wrapper">
+    <span class="scroll-word love" id="word3">Love</span>
+  </span>
 </div>
 
 <!-- Noise overlay -->
