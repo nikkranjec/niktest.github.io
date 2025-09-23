@@ -74,6 +74,9 @@
   elements.forEach(({el, speed}) => { // Shrink as you scroll (zoom out) 
     const scale = Math.max(0.5, 1 - scrollY * 0.0005); // Move up slightly as you scroll 
     const translateY = -scrollY * speed; el.style.transform = translateY(${translateY}px) scale(${scale});
+
+    });
+  });
 </script>
 
 </body>
