@@ -79,15 +79,20 @@ body {
 
 /* Paragraph */
 #paragraphContainer {
+  position: relative;       /* stays in flow below parallax content */
   max-width: 700px;
-  margin: 120vh auto 0 auto; /* appear after scrolling past text */
+  margin: 120vh auto 0 auto;
   font-size: 18px;
   line-height: 1.6;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  white-space: pre-wrap;    /* keep spaces + line breaks */
 }
-.decrypted-char { display: inline-block; }
+.decrypted-char { 
+  display: inline-block; 
+  white-space: pre;         /* preserve spaces */
+}
 </style>
 </head>
 <body>
@@ -186,30 +191,44 @@ loopNoise();
 
 /* Decrypted paragraph effect */
 const decryptedEl=document.getElementById("decryptedText");
-const textContent=decryptedEl.innerText;
+const textContent=decryptedEl.innerText.trim();
 decryptedEl.innerHTML="";
 const chars=[];
-for(let c of textContent){
-  const span=document.createElement("span");
-  span.className="decrypted-char";
-  span.textContent=c;
+for (let c of textContent) {
+  const span = document.createElement("span");
+  span.className = "decrypted-char";
+  span.textContent = c === " " ? "\u00A0" : c; // preserve spaces
   decryptedEl.appendChild(span);
   chars.push(span);
 }
 
-function decryptAnimation(){
-  chars.forEach(span=>span.textContent=String.fromCharCode(33+Math.floor(Math.random()*94)));
-  setTimeout(()=>{chars.forEach((span,i)=>span.textContent=textContent[i]);},500);
+function runDecryption(){
+  let progress=0;
+  const interval=setInterval(()=>{
+    chars.forEach((ch,i)=>{
+      if(Math.random()<progress/chars.length){
+        ch.textContent=textContent[i]===" " ? "\u00A0" : textContent[i];
+      } else {
+        ch.textContent=String.fromCharCode(33+Math.random()*94);
+      }
+    });
+    progress++;
+    if(progress>chars.length) clearInterval(interval);
+  },50);
 }
-setInterval(decryptAnimation,5000);
 
-/* Fade paragraph in/out on scroll */
+/* Trigger once visible, then loop every 5s */
 const paragraphContainer=document.getElementById("paragraphContainer");
 window.addEventListener("scroll", ()=>{
   const rect=paragraphContainer.getBoundingClientRect();
   if(rect.top < window.innerHeight && rect.bottom >= 0){
     paragraphContainer.style.opacity=1;
     paragraphContainer.style.transform='translateY(0)';
+    if(!paragraphContainer.dataset.activated){
+      paragraphContainer.dataset.activated="true";
+      runDecryption();
+      setInterval(runDecryption,5000);
+    }
   } else {
     paragraphContainer.style.opacity=0;
     paragraphContainer.style.transform='translateY(20px)';
