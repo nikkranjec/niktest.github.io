@@ -13,10 +13,11 @@
 <style>
   body {
     margin: 0;
-    height: 900vh; /* slightly longer for new paragraph */
+    height: 1200vh;
     background: #010100;
     overflow-x: hidden;
     font-family: 'EB Garamond', serif;
+    color: white;
   }
 
   .parallax-container {
@@ -58,13 +59,7 @@
     transition: opacity 0.4s ease-out;
   }
 
-  /* Lock "Love" width */
-  .love-wrapper {
-    display: inline-block;
-    width: 6ch;
-    text-align: center;
-  }
-
+  .love-wrapper { display: inline-block; width: 6ch; text-align: center; }
   .love { display: inline-block; line-height: 1.4; }
 
   /* Font cycling */
@@ -77,28 +72,25 @@
     100% { font-family: 'EB Garamond', serif; }
   }
 
-  .scroll-word.love.animate-font { animation: fontCycle 3s infinite linear; }
-
-  /* Decrypted paragraph */
-  #decryptedText {
-    max-width: 600px;
-    margin: 200px auto 0;
-    font-size: 18px;
-    line-height: 1.6;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  .scroll-word.love.animate-font {
+    animation: fontCycle 3s infinite linear;
   }
 
   /* Noise overlay */
-  .noise-overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    pointer-events: none;
-    opacity: 0.15;
-    z-index: 9999;
+  .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.15; z-index: 9999; }
+
+  /* Decrypted paragraph */
+  #paragraphContainer { width: 100%; display: flex; justify-content: center; margin-top: 60vh; }
+  #decryptedText {
+    max-width: 600px;
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    white-space: pre-wrap;
   }
+
+  .decrypted-char { display: inline-block; }
 </style>
 </head>
 <body>
@@ -124,8 +116,10 @@
 </div>
 
 <!-- Decrypted paragraph -->
-<div id="decryptedText">
-  A space where curiosity and creation meet. Here, I explore what it means to reconnect—with oneself, with others, with the world. Through workshops, personal projects, and shared expressions, I invite experiences that awaken creativity, presence, and joy. What you see here is only the beginning; more will unfold as these explorations take shape.
+<div id="paragraphContainer">
+  <div id="decryptedText">
+    A space where curiosity and creation meet. Here, I explore what it means to reconnect—with oneself, with others, with the world. Through workshops, personal projects, and shared expressions, I invite experiences that awaken creativity, presence, and joy. What you see here is only the beginning; more will unfold as these explorations take shape.
+  </div>
 </div>
 
 <!-- Noise overlay -->
@@ -144,7 +138,6 @@ const elements = [
   {el: document.getElementById('elem8'), speed: 0.35},
   {el: document.getElementById('elem9'), speed: 0.34},
 ];
-
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
   elements.forEach(({el, speed}) => {
@@ -161,96 +154,98 @@ const words = [
   document.getElementById("word2"),
   document.getElementById("word3"),
 ];
-const moveDistance = 40;
-const appearStart = 500, appearEnd = 800, disappearStart = 1500, disappearEnd = 1800;
 
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
-  if (scrollY < appearStart) {
+  const appearStart = 500;
+  const appearEnd = 800;
+  const disappearStart = 1500;
+  const disappearEnd = 1800;
+  const moveDistance = 40;
+
+  if(scrollY < appearStart){
     scrollText.style.opacity = 0;
     scrollText.style.transform = `translate(-50%, ${moveDistance}px)`;
-    words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
-  } else if (scrollY >= appearStart && scrollY <= appearEnd) {
-    const progress = (scrollY - appearStart)/(appearEnd - appearStart);
-    scrollText.style.opacity = progress;
-    scrollText.style.transform = `translate(-50%, ${moveDistance*(1-progress)}px)`;
-    words.forEach(w => { w.style.opacity = progress; if (w.id==="word3") w.classList.add("animate-font"); });
-  } else if (scrollY > appearEnd && scrollY < disappearStart) {
-    scrollText.style.opacity = 1;
-    scrollText.style.transform = "translate(-50%, 0)";
-    words.forEach(w => { w.style.opacity = 1; if (w.id==="word3") w.classList.add("animate-font"); });
-  } else if (scrollY >= disappearStart && scrollY <= disappearEnd) {
-    const progress = 1 - (scrollY - disappearStart)/(disappearEnd - disappearStart);
-    scrollText.style.opacity = progress;
-    scrollText.style.transform = `translate(-50%, ${-moveDistance*(1-progress)}px)`;
-    words.forEach(w => { w.style.opacity = progress; });
-  } else {
-    scrollText.style.opacity = 0;
-    scrollText.style.transform = `translate(-50%, ${-moveDistance}px)`;
-    words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
-  }
-
-  /* Fade in decrypted paragraph when it enters viewport */
-  const decrypted = document.getElementById("decryptedText");
-  const rect = decrypted.getBoundingClientRect();
-  if(rect.top < window.innerHeight && rect.bottom >= 0) {
-    decrypted.style.opacity = 1;
-    decrypted.style.transform = `translateY(${Math.max(0, rect.top/5)}px)`; // slight upward movement
-  } else {
-    decrypted.style.opacity = 0;
+    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
+  } else if(scrollY>=appearStart && scrollY<=appearEnd){
+    const progress = (scrollY-appearStart)/(appearEnd-appearStart);
+    scrollText.style.opacity=progress;
+    scrollText.style.transform=`translate(-50%, ${moveDistance*(1-progress)}px)`;
+    words.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
+  } else if(scrollY>appearEnd && scrollY<disappearStart){
+    scrollText.style.opacity=1;
+    scrollText.style.transform="translate(-50%,0)";
+    words.forEach(w=>{w.style.opacity=1; if(w.id==="word3") w.classList.add("animate-font");});
+  } else if(scrollY>=disappearStart && scrollY<=disappearEnd){
+    const progress=1-(scrollY-disappearStart)/(disappearEnd-disappearStart);
+    scrollText.style.opacity=progress;
+    scrollText.style.transform=`translate(-50%, ${-moveDistance*(1-progress)}px)`;
+    words.forEach(w=>{w.style.opacity=progress;});
+  } else{
+    scrollText.style.opacity=0;
+    scrollText.style.transform=`translate(-50%, ${-moveDistance}px)`;
+    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
   }
 });
 
-/* Decrypted text effect */
-const decryptedEl = document.getElementById("decryptedText");
-const paragraph = decryptedEl.innerText;
-function randomChar() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  return chars.charAt(Math.floor(Math.random() * chars.length));
-}
-function animateDecrypted(text, element, duration = 1000) {
-  const iterations = Math.floor(duration / 50);
-  let i = 0;
-  const interval = setInterval(() => {
-    let display = "";
-    for(let j=0;j<text.length;j++){
-      if(j < (i/iterations)*text.length){
-        display += text[j];
-      } else if(text[j]===" "){
-        display += " ";
-      } else display += randomChar();
-    }
-    element.innerText = display;
-    i++;
-    if(i>iterations) clearInterval(interval);
-  },50);
-}
-
-// Loop decrypted effect every 5 seconds if paragraph is visible
-setInterval(()=>{
-  const rect = decryptedEl.getBoundingClientRect();
-  if(rect.top < window.innerHeight && rect.bottom >= 0){
-    animateDecrypted(paragraph, decryptedEl, 1000);
-  }
-},5000);
-
 /* Noise overlay */
-const canvas = document.getElementById('noiseCanvas');
-const ctx = canvas.getContext('2d');
-function resizeCanvas(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; }
+const canvas=document.getElementById('noiseCanvas');
+const ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 function generateNoise(){
-  const imageData = ctx.createImageData(canvas.width, canvas.height);
-  const buffer = new Uint32Array(imageData.data.buffer);
+  const imageData=ctx.createImageData(canvas.width,canvas.height);
+  const buffer=new Uint32Array(imageData.data.buffer);
   for(let i=0;i<buffer.length;i++){
     const val=Math.random()*255|0;
     buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
   }
   ctx.putImageData(imageData,0,0);
 }
-function loopNoise(){ generateNoise(); requestAnimationFrame(loopNoise); }
+function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
 loopNoise();
+
+/* Decrypted paragraph animation */
+const decryptedEl=document.getElementById("decryptedText");
+const paragraphText = decryptedEl.innerText;
+let decryptedChars = [];
+
+function initDecrypted(){
+  decryptedEl.innerHTML = '';
+  for(let char of paragraphText){
+    const span = document.createElement('span');
+    span.className = 'decrypted-char';
+    span.textContent = char;
+    decryptedEl.appendChild(span);
+    decryptedChars.push(span);
+  }
+}
+initDecrypted();
+
+function decryptLoop(){
+  decryptedChars.forEach(span=>{
+    span.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
+  });
+  setTimeout(()=>{
+    decryptedChars.forEach((span,i)=>{
+      span.textContent = paragraphText[i];
+    });
+  }, 500);
+}
+setInterval(decryptLoop, 5000);
+
+// Fade in paragraph when in viewport
+window.addEventListener("scroll", ()=>{
+  const rect = decryptedEl.getBoundingClientRect();
+  if(rect.top < window.innerHeight && rect.bottom >= 0){
+    decryptedEl.style.opacity = 1;
+    decryptedEl.style.transform = 'translateY(0px)';
+  } else {
+    decryptedEl.style.opacity = 0;
+    decryptedEl.style.transform = 'translateY(20px)';
+  }
+});
 </script>
 </body>
 </html>
