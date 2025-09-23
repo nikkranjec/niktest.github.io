@@ -63,11 +63,11 @@
   /* Font cycling for the word "love" */
   @keyframes fontCycle {
     0% { font-family: 'EB Garamond', serif; }
-    20% { font-family: 'Georgia', serif; }
-    40% { font-family: 'Courier New', monospace; }
-    60% { font-family: 'Arial', sans-serif; }
+    20% { font-family: 'Bitcount Single Ink', serif; }
+    40% { font-family: 'Play', monospace; }
+    60% { font-family: 'Righteous', sans-serif; }
     80% { font-family: 'Verdana', sans-serif; }
-    100% { font-family: 'EB Garamond', serif; }
+    100% { font-family: 'Press Start 2P', serif; }
   }
 
   .scroll-word.love.animate-font {
@@ -122,7 +122,7 @@
 <div class="scroll-text-container">
   <span class="scroll-word" id="word1">reincarnated</span>
   <span class="scroll-word" id="word2">with</span>
-  <span class="scroll-word love" id="word3">love</span>
+  <span class="scroll-word love" id="word3">Love</span>
 </div>
 
 <!-- Noise overlay -->
@@ -158,7 +158,7 @@
     document.getElementById('word2'),
     document.getElementById('word3')
   ];
-  const appearOffset = 400;
+  const appearOffset = 500;
   let hasAppeared = false;
 
   window.addEventListener('scroll', () => {
