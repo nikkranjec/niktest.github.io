@@ -79,20 +79,21 @@ body {
 /* Noise overlay */
 .noise-overlay { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.15; z-index:9999; }
 
+/* Paragraph */
 #paragraphContainer {
   position: fixed;
   left: 50%;
-  top: 70%;            
+  top: 70%;
   transform: translate(-50%, 40px);
   max-width: 700px;
   font-size: 18px;
   line-height: 1.6;
   opacity: 0;
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-  white-space: normal;      /* allow normal wrapping */
-  text-align: justify;      /* justify alignment */
+  white-space: normal;
+  text-align: justify;
 }
-  
+
 .decrypted-char { display: inline-block; white-space: pre; }
 </style>
 </head>
@@ -153,8 +154,8 @@ window.addEventListener('scroll', ()=>{
 /* ------------------ Scroll-triggered "reincarnated" text ------------------ */
 const scrollText = document.getElementById("scrollText");
 const words = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
-
 const appearStart=500,appearEnd=800,disappearStart=1500,disappearEnd=1800,moveDistance=40;
+
 window.addEventListener("scroll", ()=>{
   const scrollY = window.scrollY;
   if(scrollY<appearStart){
@@ -209,24 +210,25 @@ const chars = [];
 for (let c of textContent) {
   const span = document.createElement("span");
   span.className = "decrypted-char";
-  span.textContent = c===" " ? "\u00A0" : c;
+  span.textContent = c===" " ? "\u00A0": c;
   decryptedEl.appendChild(span);
   chars.push(span);
 }
 
-let decryptionInterval;
-function startDecryptionLoop() {
-  if(decryptionInterval) return;
-  decryptionInterval = setInterval(() => {
+function decryptOnce() {
+  let progress=0;
+  const interval = setInterval(()=>{
     chars.forEach((ch,i)=>{
-      if(Math.random()<0.2) ch.textContent = textContent[i]===" "? "\u00A0": textContent[i];
+      if(i<=progress) ch.textContent = textContent[i]===" " ? "\u00A0" : textContent[i];
       else ch.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
     });
-  },50);
+    progress++;
+    if(progress>=chars.length) clearInterval(interval);
+  },30);
 }
 
-/* ------------------ Scroll animation for paragraph ------------------ */
-const paraAppearStart = disappearEnd + 50; // just after reincarnated text disappears
+/* ------------------ Paragraph scroll animation ------------------ */
+const paraAppearStart = disappearEnd + 50;
 const paraAppearEnd = paraAppearStart + 300;
 const paraDisappearStart = paraAppearEnd + 900;
 const paraDisappearEnd = paraDisappearStart + 300;
@@ -243,7 +245,7 @@ window.addEventListener("scroll", ()=>{
     paragraph.style.transform = `translate(-50%, ${paraMoveDistance*(1-progress)}px)`;
     if(!paragraph.dataset.activated){
       paragraph.dataset.activated = "true";
-      startDecryptionLoop();
+      decryptOnce();
     }
   } else if(scrollY > paraAppearEnd && scrollY < paraDisappearStart){
     paragraph.style.opacity = 1;
