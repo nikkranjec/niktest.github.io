@@ -11,86 +11,83 @@
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Fredericka+the+Great&family=Meie+Script&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 
 <style>
-  body {
-    margin: 0;
-    height: 1200vh;
-    background: #010100;
-    overflow-x: hidden;
-    font-family: 'EB Garamond', serif;
-    color: white;
-  }
+body {
+  margin: 0;
+  height: 1500vh;
+  background: #010100;
+  overflow-x: hidden;
+  font-family: 'EB Garamond', serif;
+  color: white;
+}
 
-  .parallax-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
+.parallax-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
 
-  .element { position: absolute; transition: transform 0.2s ease-out; }
-  .element img { width: 600px; }
-  .element-text {
-    color: hsl(0, 0%, 10%);
-    font-size: 48px;
-    font-weight: bold;
-    text-transform: lowercase;
-  }
+.element { position: absolute; transition: transform 0.2s ease-out; }
+.element img { width: 600px; }
+.element-text {
+  color: hsl(0,0%,10%);
+  font-size: 48px;
+  font-weight: bold;
+  text-transform: lowercase;
+}
 
-  /* Scroll-triggered text */
-  .scroll-text-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, 40px);
-    display: flex;
-    gap: 20px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-  }
+/* Scroll-triggered text */
+.scroll-text-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 40px);
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
 
-  .scroll-word {
-    font-size: 22px;
-    font-weight: bold;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
-  }
+.scroll-word {
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
 
-  .love-wrapper { display: inline-block; width: 6ch; text-align: center; }
-  .love { display: inline-block; line-height: 1.4; }
+.love-wrapper { display: inline-block; width: 6ch; text-align: center; }
+.love { display: inline-block; line-height: 1.4; }
 
-  /* Font cycling */
-  @keyframes fontCycle {
-    0%   { font-family: 'EB Garamond', serif; }
-    20%  { font-family: 'Doto', sans-serif; }
-    40%  { font-family: 'Fredericka the Great', serif; }
-    60%  { font-family: 'Meie Script', cursive; }
-    80%  { font-family: 'UnifrakturCook', cursive; }
-    100% { font-family: 'EB Garamond', serif; }
-  }
+@keyframes fontCycle {
+  0%   { font-family: 'EB Garamond', serif; }
+  20%  { font-family: 'Doto', sans-serif; }
+  40%  { font-family: 'Fredericka the Great', serif; }
+  60%  { font-family: 'Meie Script', cursive; }
+  80%  { font-family: 'UnifrakturCook', cursive; }
+  100% { font-family: 'EB Garamond', serif; }
+}
 
-  .scroll-word.love.animate-font {
-    animation: fontCycle 3s infinite linear;
-  }
+.scroll-word.love.animate-font {
+  animation: fontCycle 3s infinite linear;
+}
 
-  /* Noise overlay */
-  .noise-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0.15; z-index: 9999; }
+.noise-overlay { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.15; z-index:9999; }
 
-  /* Decrypted paragraph */
-  #paragraphContainer { width: 100%; display: flex; justify-content: center; margin-top: 60vh; }
-  #decryptedText {
-    max-width: 600px;
-    font-size: 18px;
-    line-height: 1.6;
-    opacity: 0;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    white-space: pre-wrap;
-  }
-
-  .decrypted-char { display: inline-block; }
+/* Paragraph */
+#paragraphContainer {
+  max-width: 700px;
+  margin: 120vh auto 0 auto; /* appear after scrolling past text */
+  font-size: 18px;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.decrypted-char { display: inline-block; }
 </style>
 </head>
 <body>
@@ -115,11 +112,11 @@
   <span class="love-wrapper"><span class="scroll-word love" id="word3">Love</span></span>
 </div>
 
-<!-- Decrypted paragraph -->
+<!-- Paragraph -->
 <div id="paragraphContainer">
-  <div id="decryptedText">
+  <span id="decryptedText">
     A space where curiosity and creation meet. Here, I explore what it means to reconnect—with oneself, with others, with the world. Through workshops, personal projects, and shared expressions, I invite experiences that awaken creativity, presence, and joy. What you see here is only the beginning; more will unfold as these explorations take shape.
-  </div>
+  </span>
 </div>
 
 <!-- Noise overlay -->
@@ -138,39 +135,29 @@ const elements = [
   {el: document.getElementById('elem8'), speed: 0.35},
   {el: document.getElementById('elem9'), speed: 0.34},
 ];
-window.addEventListener('scroll', () => {
+window.addEventListener('scroll', ()=>{
   const scrollY = window.scrollY;
-  elements.forEach(({el, speed}) => {
-    const scale = Math.max(0.5, 1 - scrollY * 0.0005);
-    const translateY = -scrollY * speed;
-    el.style.transform = `translateY(${translateY}px) scale(${scale})`;
+  elements.forEach(({el,speed})=>{
+    const scale = Math.max(0.5,1-scrollY*0.0005);
+    const translateY=-scrollY*speed;
+    el.style.transform=`translateY(${translateY}px) scale(${scale})`;
   });
 });
 
 /* Scroll-triggered text animation */
 const scrollText = document.getElementById("scrollText");
-const words = [
-  document.getElementById("word1"),
-  document.getElementById("word2"),
-  document.getElementById("word3"),
-];
-
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
-  const appearStart = 500;
-  const appearEnd = 800;
-  const disappearStart = 1500;
-  const disappearEnd = 1800;
-  const moveDistance = 40;
-
-  if(scrollY < appearStart){
-    scrollText.style.opacity = 0;
-    scrollText.style.transform = `translate(-50%, ${moveDistance}px)`;
+const words = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
+window.addEventListener("scroll", ()=>{
+  const scrollY=window.scrollY;
+  const appearStart=500,appearEnd=800,disappearStart=1500,disappearEnd=1800,moveDistance=40;
+  if(scrollY<appearStart){
+    scrollText.style.opacity=0;
+    scrollText.style.transform=`translate(-50%,${moveDistance}px)`;
     words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
   } else if(scrollY>=appearStart && scrollY<=appearEnd){
-    const progress = (scrollY-appearStart)/(appearEnd-appearStart);
+    const progress=(scrollY-appearStart)/(appearEnd-appearStart);
     scrollText.style.opacity=progress;
-    scrollText.style.transform=`translate(-50%, ${moveDistance*(1-progress)}px)`;
+    scrollText.style.transform=`translate(-50%,${moveDistance*(1-progress)}px)`;
     words.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
   } else if(scrollY>appearEnd && scrollY<disappearStart){
     scrollText.style.opacity=1;
@@ -179,71 +166,53 @@ window.addEventListener("scroll", () => {
   } else if(scrollY>=disappearStart && scrollY<=disappearEnd){
     const progress=1-(scrollY-disappearStart)/(disappearEnd-disappearStart);
     scrollText.style.opacity=progress;
-    scrollText.style.transform=`translate(-50%, ${-moveDistance*(1-progress)}px)`;
+    scrollText.style.transform=`translate(-50%,${-moveDistance*(1-progress)}px)`;
     words.forEach(w=>{w.style.opacity=progress;});
   } else{
     scrollText.style.opacity=0;
-    scrollText.style.transform=`translate(-50%, ${-moveDistance}px)`;
+    scrollText.style.transform=`translate(-50%,${-moveDistance}px)`;
     words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
   }
 });
 
 /* Noise overlay */
-const canvas=document.getElementById('noiseCanvas');
-const ctx=canvas.getContext('2d');
+const canvas=document.getElementById('noiseCanvas'); const ctx=canvas.getContext('2d');
 function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize',resizeCanvas);
 resizeCanvas();
-function generateNoise(){
-  const imageData=ctx.createImageData(canvas.width,canvas.height);
-  const buffer=new Uint32Array(imageData.data.buffer);
-  for(let i=0;i<buffer.length;i++){
-    const val=Math.random()*255|0;
-    buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
-  }
-  ctx.putImageData(imageData,0,0);
-}
+function generateNoise(){const imageData=ctx.createImageData(canvas.width,canvas.height);const buffer=new Uint32Array(imageData.data.buffer);for(let i=0;i<buffer.length;i++){const val=Math.random()*255|0;buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;}ctx.putImageData(imageData,0,0);}
 function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
 loopNoise();
 
-/* Decrypted paragraph animation */
+/* Decrypted paragraph effect */
 const decryptedEl=document.getElementById("decryptedText");
-const paragraphText = decryptedEl.innerText;
-let decryptedChars = [];
-
-function initDecrypted(){
-  decryptedEl.innerHTML = '';
-  for(let char of paragraphText){
-    const span = document.createElement('span');
-    span.className = 'decrypted-char';
-    span.textContent = char;
-    decryptedEl.appendChild(span);
-    decryptedChars.push(span);
-  }
+const textContent=decryptedEl.innerText;
+decryptedEl.innerHTML="";
+const chars=[];
+for(let c of textContent){
+  const span=document.createElement("span");
+  span.className="decrypted-char";
+  span.textContent=c;
+  decryptedEl.appendChild(span);
+  chars.push(span);
 }
-initDecrypted();
 
-function decryptLoop(){
-  decryptedChars.forEach(span=>{
-    span.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
-  });
-  setTimeout(()=>{
-    decryptedChars.forEach((span,i)=>{
-      span.textContent = paragraphText[i];
-    });
-  }, 500);
+function decryptAnimation(){
+  chars.forEach(span=>span.textContent=String.fromCharCode(33+Math.floor(Math.random()*94)));
+  setTimeout(()=>{chars.forEach((span,i)=>span.textContent=textContent[i]);},500);
 }
-setInterval(decryptLoop, 5000);
+setInterval(decryptAnimation,5000);
 
-// Fade in paragraph when in viewport
+/* Fade paragraph in/out on scroll */
+const paragraphContainer=document.getElementById("paragraphContainer");
 window.addEventListener("scroll", ()=>{
-  const rect = decryptedEl.getBoundingClientRect();
+  const rect=paragraphContainer.getBoundingClientRect();
   if(rect.top < window.innerHeight && rect.bottom >= 0){
-    decryptedEl.style.opacity = 1;
-    decryptedEl.style.transform = 'translateY(0px)';
+    paragraphContainer.style.opacity=1;
+    paragraphContainer.style.transform='translateY(0)';
   } else {
-    decryptedEl.style.opacity = 0;
-    decryptedEl.style.transform = 'translateY(20px)';
+    paragraphContainer.style.opacity=0;
+    paragraphContainer.style.transform='translateY(20px)';
   }
 });
 </script>
