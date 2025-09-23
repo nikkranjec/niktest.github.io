@@ -41,25 +41,22 @@
 
   .scroll-text-container {
   position: fixed;
-  top: 60%; /* starting vertical position */
+  top: 50%; /* vertically centered */
   left: 50%;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 40px); /* start slightly below */
   display: flex;
   gap: 20px;
   pointer-events: none;
   opacity: 0;
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 .scroll-word {
   font-size: 64px;
   font-weight: bold;
   color: white;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.6s ease-out;
 }
 
-/* Font cycling for the word "love" */
 @keyframes fontCycle {
   0% { font-family: 'EB Garamond', serif; }
   20% { font-family: 'Georgia', serif; }
@@ -151,36 +148,44 @@
   });
 
   // Scroll-triggered text
+const scrollText = document.querySelector('.scroll-text-container');
 const words = [
-  {el: document.getElementById('word1'), delay: 0},
-  {el: document.getElementById('word2'), delay: 200},
-  {el: document.getElementById('word3'), delay: 400, isLove: true},
+  document.getElementById('word1'),
+  document.getElementById('word2'),
+  document.getElementById('word3')
 ];
-
-const appearOffset = 500; // scrollY at which animation starts
+const appearOffset = 200; // scrollY at which text appears
+let hasAppeared = false;
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
 
-  if(scrollY > appearOffset) {
-    words.forEach(({el, delay, isLove}) => {
+  if (scrollY > appearOffset && !hasAppeared) {
+    hasAppeared = true;
+    scrollText.style.opacity = 1;
+    scrollText.style.transform = 'translate(-50%, 0)';
+
+    // staggered animation
+    words.forEach((word, i) => {
       setTimeout(() => {
-        el.style.opacity = 1;
-        el.style.transform = 'translateY(0)';
-        if(isLove) el.classList.add('animate-font');
-      }, delay);
+        if(word.id === 'word3') word.classList.add('animate-font');
+        word.style.opacity = 1;
+      }, i * 300); // 0ms, 300ms, 600ms
     });
-  } else {
-    words.forEach(({el, isLove}) => {
-      el.style.opacity = 0;
-      el.style.transform = 'translateY(40px)';
-      if(isLove) el.classList.remove('animate-font');
+
+  } else if (scrollY <= appearOffset && hasAppeared) {
+    hasAppeared = false;
+    scrollText.style.opacity = 0;
+    scrollText.style.transform = 'translate(-50%, 40px)';
+    words.forEach(word => {
+      word.style.opacity = 0;
+      word.classList.remove('animate-font');
     });
   }
 });
 
   
-  /* 🔹 Noise overlay */
+  /*  Noise overlay */
   const canvas = document.getElementById('noiseCanvas');
   const ctx = canvas.getContext('2d');
 
