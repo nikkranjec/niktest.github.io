@@ -175,7 +175,7 @@
     } else if (scrollY >= disappearStart && scrollY <= disappearEnd) {
       const progress = 1 - (scrollY - disappearStart) / (disappearEnd - disappearStart);
       scrollText.style.opacity = progress;
-      scrollText.style.transform = `translate(-50%, ${40*(1-progress)}px)`;
+      scrollText.style.transform = `translate(-50%, ${-40*(1-progress)}px)`;
       words.forEach(w => { w.style.opacity = progress; });
     } else {
       scrollText.style.opacity = 0;
