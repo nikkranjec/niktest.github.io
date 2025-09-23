@@ -65,28 +65,35 @@
 
 <script>
   const elements = [
-    {el: document.getElementById('elem1'), speed: 0.5, scale: 0.8, rotation: 20},
-    {el: document.getElementById('elem2'), speed: 0.3, scale: 1.3, rotation: 20},
-    {el: document.getElementById('elem3'), speed: 0.7, scale: 1, rotation: 0},
-    {el: document.getElementById('elem4'), speed: 0.4, scale: 1, rotation: 0},
-    {el: document.getElementById('elem5'), speed: 0.6}, scale: 1, rotation: 0,
+    { el: document.getElementById('elem1'), speed: 0.5, baseScale: 1.5, baseRotation: 20 },
+    { el: document.getElementById('elem2'), speed: 0.3, baseScale: 1,   baseRotation: 0 },
+    { el: document.getElementById('elem3'), speed: 0.7, baseScale: 1,   baseRotation: 0 },
+    { el: document.getElementById('elem4'), speed: 0.4, baseScale: 1,   baseRotation: -15 },
+    { el: document.getElementById('elem5'), speed: 0.4, baseScale: 1,   baseRotation: -15 },
   ];
-  
-window.addEventListener('scroll', () => {
+
+  window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
 
-    elements.forEach(({el, speed, baseScale, baseRotation}) => {
-      // 🔹 dynamic parallax movement
+    elements.forEach(({ el, speed, baseScale, baseRotation }) => {
+      // base parallax translation
       const translateY = -scrollY * speed;
 
-      // 🔹 dynamic scaling based on scroll
+      // dynamic zoom-out
       const scrollScale = Math.max(0.5, 1 - scrollY * 0.0005);
 
-      // 🔹 combine base + scroll effects
+      // combine with base scale
       const finalScale = scrollScale * baseScale;
-      const finalRotation = baseRotation; // stays constant
 
-      el.style.transform = `translateY(${translateY}px) scale(${finalScale}) rotate(${finalRotation}deg)`;
+      // rotation stays constant (unless you want to animate it)
+      const finalRotation = baseRotation;
+
+      // merge everything into one transform
+      el.style.transform = `
+        translateY(${translateY}px)
+        scale(${finalScale})
+        rotate(${finalRotation}deg)
+      `;
     });
   });
 </script>
