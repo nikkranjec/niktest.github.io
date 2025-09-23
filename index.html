@@ -7,19 +7,20 @@
 <style>
   body {
     margin: 0;
-    height: 400vh; /* Enough height for scrolling */
+    height: 800vh; /* Enough height for scrolling */
     background: #010100;
     overflow-x: hidden;
-    font-family: EB Garamond, regular;
+    font-family: 'EB Garamond', serif;
   }
 
+  /* Parallax container */
   .parallax-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Allows scrolling through */
+    pointer-events: none;
   }
 
   .element {
@@ -39,36 +40,39 @@
     transform: rotate(5deg);
   }
 
+  /* Scroll-triggered text */
   .scroll-text-container {
-  position: fixed;
-  top: 50%; /* vertically centered */
-  left: 50%;
-  transform: translate(-50%, 40px); /* start slightly below */
-  display: flex;
-  gap: 20px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
+    position: fixed;
+    top: 50%; /* vertically centered */
+    left: 50%;
+    transform: translate(-50%, 40px); /* start slightly below */
+    display: flex;
+    gap: 20px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
 
-.scroll-word {
-  font-size: 64px;
-  font-weight: bold;
-  color: white;
-}
+  .scroll-word {
+    font-size: 64px;
+    font-weight: bold;
+    color: white;
+    opacity: 0;
+  }
 
-@keyframes fontCycle {
-  0% { font-family: 'EB Garamond', serif; }
-  20% { font-family: 'Georgia', serif; }
-  40% { font-family: 'Courier New', monospace; }
-  60% { font-family: 'Arial', sans-serif; }
-  80% { font-family: 'Verdana', sans-serif; }
-  100% { font-family: 'EB Garamond', serif; }
-}
+  /* Font cycling for the word "love" */
+  @keyframes fontCycle {
+    0% { font-family: 'EB Garamond', serif; }
+    20% { font-family: 'Georgia', serif; }
+    40% { font-family: 'Courier New', monospace; }
+    60% { font-family: 'Arial', sans-serif; }
+    80% { font-family: 'Verdana', sans-serif; }
+    100% { font-family: 'EB Garamond', serif; }
+  }
 
-.scroll-word.love.animate-font {
-  animation: fontCycle 2.5s infinite linear;
-}
+  .scroll-word.love.animate-font {
+    animation: fontCycle 2.5s infinite linear;
+  }
 
   /* Noise overlay */
   .noise-overlay {
@@ -76,13 +80,14 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     pointer-events: none;
-    opacity: 0.15; /* adjust visibility of noise */
+    opacity: 0.15; /* adjust visibility */
     z-index: 9999;
   }
 </style>
 </head>
 <body>
 
+<!-- Parallax images -->
 <div class="parallax-container">
   <div class="element" style="top:20%; left:33%;" id="elem2">
     <img src="magazine.webp" alt="magazine">
@@ -117,14 +122,14 @@
 <div class="scroll-text-container">
   <span class="scroll-word" id="word1">reincarnated</span>
   <span class="scroll-word" id="word2">with</span>
-  <span class="scroll-word" id="word3">love</span>
+  <span class="scroll-word love" id="word3">love</span>
 </div>
 
-<!--  Noise canvas -->
+<!-- Noise overlay -->
 <canvas class="noise-overlay" id="noiseCanvas"></canvas>
 
 <script>
-  /* Parallax */
+  /* Parallax scrolling */
   const elements = [
     {el: document.getElementById('elem1'), speed: 0.5},
     {el: document.getElementById('elem2'), speed: 0.35},
@@ -139,7 +144,6 @@
 
   window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
-
     elements.forEach(({el, speed}) => {
       const scale = Math.max(0.5, 1 - scrollY * 0.0005);
       const translateY = -scrollY * speed;
@@ -147,45 +151,43 @@
     });
   });
 
-  // Scroll-triggered text
-const scrollText = document.querySelector('.scroll-text-container');
-const words = [
-  document.getElementById('word1'),
-  document.getElementById('word2'),
-  document.getElementById('word3')
-];
-const appearOffset = 200; // scrollY at which text appears
-let hasAppeared = false;
+  /* Scroll-triggered text */
+  const scrollText = document.querySelector('.scroll-text-container');
+  const words = [
+    document.getElementById('word1'),
+    document.getElementById('word2'),
+    document.getElementById('word3')
+  ];
+  const appearOffset = 400;
+  let hasAppeared = false;
 
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
 
-  if (scrollY > appearOffset && !hasAppeared) {
-    hasAppeared = true;
-    scrollText.style.opacity = 1;
-    scrollText.style.transform = 'translate(-50%, 0)';
+    if (scrollY > appearOffset && !hasAppeared) {
+      hasAppeared = true;
+      scrollText.style.opacity = 1;
+      scrollText.style.transform = 'translate(-50%, 0)';
 
-    // staggered animation
-    words.forEach((word, i) => {
-      setTimeout(() => {
-        if(word.id === 'word3') word.classList.add('animate-font');
-        word.style.opacity = 1;
-      }, i * 300); // 0ms, 300ms, 600ms
-    });
+      words.forEach((word, i) => {
+        setTimeout(() => {
+          if(word.id === 'word3') word.classList.add('animate-font');
+          word.style.opacity = 1;
+        }, i * 300);
+      });
 
-  } else if (scrollY <= appearOffset && hasAppeared) {
-    hasAppeared = false;
-    scrollText.style.opacity = 0;
-    scrollText.style.transform = 'translate(-50%, 40px)';
-    words.forEach(word => {
-      word.style.opacity = 0;
-      word.classList.remove('animate-font');
-    });
-  }
-});
+    } else if (scrollY <= appearOffset && hasAppeared) {
+      hasAppeared = false;
+      scrollText.style.opacity = 0;
+      scrollText.style.transform = 'translate(-50%, 40px)';
+      words.forEach(word => {
+        word.style.opacity = 0;
+        word.classList.remove('animate-font');
+      });
+    }
+  });
 
-  
-  /*  Noise overlay */
+  /* Noise overlay */
   const canvas = document.getElementById('noiseCanvas');
   const ctx = canvas.getContext('2d');
 
