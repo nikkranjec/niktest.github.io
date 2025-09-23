@@ -190,10 +190,10 @@ function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
 loopNoise();
 
 /* Decrypted paragraph effect */
-const decryptedEl=document.getElementById("decryptedText");
-const textContent=decryptedEl.innerText.trim();
-decryptedEl.innerHTML="";
-const chars=[];
+const decryptedEl = document.getElementById("decryptedText");
+const textContent = decryptedEl.innerText.trim();
+decryptedEl.innerHTML = "";
+const chars = [];
 for (let c of textContent) {
   const span = document.createElement("span");
   span.className = "decrypted-char";
@@ -202,38 +202,43 @@ for (let c of textContent) {
   chars.push(span);
 }
 
-function runDecryption(){
-  let progress=0;
-  const interval=setInterval(()=>{
-    chars.forEach((ch,i)=>{
-      if(Math.random()<progress/chars.length){
-        ch.textContent=textContent[i]===" " ? "\u00A0" : textContent[i];
+function runDecryption() {
+  let progress = 0;
+  const interval = setInterval(() => {
+    chars.forEach((ch, i) => {
+      if (Math.random() < progress / chars.length) {
+        ch.textContent = textContent[i] === " " ? "\u00A0" : textContent[i];
       } else {
-        ch.textContent=String.fromCharCode(33+Math.random()*94);
+        ch.textContent = String.fromCharCode(33 + Math.random() * 94);
       }
     });
     progress++;
-    if(progress>chars.length) clearInterval(interval);
-  },50);
+    if (progress > chars.length) clearInterval(interval);
+  }, 50);
 }
 
-/* Trigger once visible, then loop every 5s */
-const paragraphContainer=document.getElementById("paragraphContainer");
-window.addEventListener("scroll", ()=>{
-  const rect=paragraphContainer.getBoundingClientRect();
-  if(rect.top < window.innerHeight && rect.bottom >= 0){
-    paragraphContainer.style.opacity=1;
-    paragraphContainer.style.transform='translateY(0)';
-    if(!paragraphContainer.dataset.activated){
-      paragraphContainer.dataset.activated="true";
+/* Fade + decrypt paragraph only after reincarnated text is gone */
+const paragraphContainer = document.getElementById("paragraphContainer");
+const disappearEnd = 1800; // match value from scroll-text animation
+
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+
+  if (scrollY > disappearEnd) {
+    // fade in + run animation
+    paragraphContainer.style.opacity = 1;
+    paragraphContainer.style.transform = "translateY(0)";
+    if (!paragraphContainer.dataset.activated) {
+      paragraphContainer.dataset.activated = "true";
       runDecryption();
-      setInterval(runDecryption,5000);
+      setInterval(runDecryption, 5000);
     }
   } else {
-    paragraphContainer.style.opacity=0;
-    paragraphContainer.style.transform='translateY(20px)';
+    // keep hidden until reincarnated text is gone
+    paragraphContainer.style.opacity = 0;
+    paragraphContainer.style.transform = "translateY(20px)";
   }
 });
-</script>
-</body>
+</script> 
+</body> 
 </html>
