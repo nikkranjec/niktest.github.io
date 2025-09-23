@@ -58,10 +58,10 @@
     transition: opacity 0.5s ease-out;
   }
 
-  /* Lock "Love" so it doesn't shift layout */
+  /* Lock "Love" width */
   .love-wrapper {
     display: inline-block;
-    width: 6ch;       /* reserve space for widest font */
+    width: 6ch;
     text-align: center;
   }
 
@@ -157,15 +157,16 @@
     const appearEnd = 800;
     const disappearStart = 1500;
     const disappearEnd = 1800;
+    const moveDistance = 40; // how much text moves up
 
     if (scrollY < appearStart) {
       scrollText.style.opacity = 0;
-      scrollText.style.transform = "translate(-50%, 40px)";
+      scrollText.style.transform = `translate(-50%, ${moveDistance}px)`;
       words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
     } else if (scrollY >= appearStart && scrollY <= appearEnd) {
       const progress = (scrollY - appearStart) / (appearEnd - appearStart);
       scrollText.style.opacity = progress;
-      scrollText.style.transform = `translate(-50%, ${40 - 40*progress}px)`;
+      scrollText.style.transform = `translate(-50%, ${moveDistance*(1-progress)}px)`;
       words.forEach(w => { w.style.opacity = progress; if (w.id==="word3") w.classList.add("animate-font"); });
     } else if (scrollY > appearEnd && scrollY < disappearStart) {
       scrollText.style.opacity = 1;
@@ -174,11 +175,11 @@
     } else if (scrollY >= disappearStart && scrollY <= disappearEnd) {
       const progress = 1 - (scrollY - disappearStart) / (disappearEnd - disappearStart);
       scrollText.style.opacity = progress;
-      scrollText.style.transform = `translate(-50%, ${-40*(1-progress)}px)`;
+      scrollText.style.transform = `translate(-50%, ${-moveDistance*(1-progress)}px)`; // moves up
       words.forEach(w => { w.style.opacity = progress; });
     } else {
       scrollText.style.opacity = 0;
-      scrollText.style.transform = "translate(-50%, 40px)";
+      scrollText.style.transform = `translate(-50%, ${-moveDistance}px)`;
       words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
     }
   });
