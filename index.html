@@ -39,6 +39,40 @@
     transform: rotate(5deg);
   }
 
+  .scroll-text-container {
+  position: fixed;
+  top: 60%; /* starting vertical position */
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.scroll-word {
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.6s ease-out;
+}
+
+/* Font cycling for the word "love" */
+@keyframes fontCycle {
+  0% { font-family: 'EB Garamond', serif; }
+  20% { font-family: 'Georgia', serif; }
+  40% { font-family: 'Courier New', monospace; }
+  60% { font-family: 'Arial', sans-serif; }
+  80% { font-family: 'Verdana', sans-serif; }
+  100% { font-family: 'EB Garamond', serif; }
+}
+
+.scroll-word.love.animate-font {
+  animation: fontCycle 2.5s infinite linear;
+}
+
   /* 🔹 Noise overlay */
   .noise-overlay {
     position: fixed;
@@ -82,6 +116,13 @@
   </div>
 </div>
 
+// 🔹 Scroll-triggered text
+<div class="scroll-text-container">
+  <span class="scroll-word" id="word1">reincarnated</span>
+  <span class="scroll-word" id="word2">with</span>
+  <span class="scroll-word" id="word3">love</span>
+</div>
+
 <!-- 🔹 Noise canvas -->
 <canvas class="noise-overlay" id="noiseCanvas"></canvas>
 
@@ -109,6 +150,36 @@
     });
   });
 
+  // Scroll-triggered text
+const words = [
+  {el: document.getElementById('word1'), delay: 0},
+  {el: document.getElementById('word2'), delay: 200},
+  {el: document.getElementById('word3'), delay: 400, isLove: true},
+];
+
+const appearOffset = 500; // scrollY at which animation starts
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+
+  if(scrollY > appearOffset) {
+    words.forEach(({el, delay, isLove}) => {
+      setTimeout(() => {
+        el.style.opacity = 1;
+        el.style.transform = 'translateY(0)';
+        if(isLove) el.classList.add('animate-font');
+      }, delay);
+    });
+  } else {
+    words.forEach(({el, isLove}) => {
+      el.style.opacity = 0;
+      el.style.transform = 'translateY(40px)';
+      if(isLove) el.classList.remove('animate-font');
+    });
+  }
+});
+
+  
   /* 🔹 Noise overlay */
   const canvas = document.getElementById('noiseCanvas');
   const ctx = canvas.getContext('2d');
