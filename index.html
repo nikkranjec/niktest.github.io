@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kendrick Lamar Parallax Landing</title>
+<title>Parallax Landing</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,16 +39,22 @@ body {
 }
 
 /* Scroll-triggered text */
-.scroll-text-container {
+.scroll-text-container,
+#paragraphContainer {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, 40px);
-  display: flex;
-  gap: 20px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  text-align: center;
+}
+
+/* Reincarnated text */
+.scroll-text-container {
+  display: flex;
+  gap: 20px;
 }
 
 .scroll-word {
@@ -75,23 +81,23 @@ body {
   animation: fontCycle 3s infinite linear;
 }
 
-.noise-overlay { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.15; z-index:9999; }
-
 /* Paragraph */
 #paragraphContainer {
-  position: relative;       /* stays in flow below parallax content */
   max-width: 700px;
-  margin: 120vh auto 0 auto;
   font-size: 18px;
   line-height: 1.6;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-  white-space: pre-wrap;    /* keep spaces + line breaks */
+  white-space: pre-wrap;
 }
-.decrypted-char { 
-  display: inline-block; 
-  white-space: pre;         /* preserve spaces */
+.decrypted-char { display: inline-block; white-space: pre; }
+
+/* Noise overlay */
+.noise-overlay {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  pointer-events:none;
+  opacity:0.15;
+  z-index:9999;
 }
 </style>
 </head>
@@ -150,8 +156,8 @@ window.addEventListener('scroll', ()=>{
 });
 
 /* Scroll-triggered text animation */
-const scrollText = document.getElementById("scrollText");
-const words = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
+const scrollText=document.getElementById("scrollText");
+const words=[document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
 window.addEventListener("scroll", ()=>{
   const scrollY=window.scrollY;
   const appearStart=500,appearEnd=800,disappearStart=1500,disappearEnd=1800,moveDistance=40;
@@ -180,65 +186,80 @@ window.addEventListener("scroll", ()=>{
   }
 });
 
-/* Noise overlay */
-const canvas=document.getElementById('noiseCanvas'); const ctx=canvas.getContext('2d');
-function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-function generateNoise(){const imageData=ctx.createImageData(canvas.width,canvas.height);const buffer=new Uint32Array(imageData.data.buffer);for(let i=0;i<buffer.length;i++){const val=Math.random()*255|0;buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;}ctx.putImageData(imageData,0,0);}
-function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
-loopNoise();
-
-/* Decrypted paragraph effect */
-const decryptedEl = document.getElementById("decryptedText");
-const textContent = decryptedEl.innerText.trim();
-decryptedEl.innerHTML = "";
-const chars = [];
+/* Paragraph scroll animation */
+const paragraphScroll=document.getElementById("paragraphContainer");
+const decryptedEl=document.getElementById("decryptedText");
+const textContent=decryptedEl.innerText.trim();
+decryptedEl.innerHTML="";
+const chars=[];
 for (let c of textContent) {
-  const span = document.createElement("span");
-  span.className = "decrypted-char";
-  span.textContent = c === " " ? "\u00A0" : c; // preserve spaces
+  const span=document.createElement("span");
+  span.className="decrypted-char";
+  span.textContent=c===" " ? "\u00A0" : c;
   decryptedEl.appendChild(span);
   chars.push(span);
 }
 
-function runDecryption() {
-  let progress = 0;
-  const interval = setInterval(() => {
-    chars.forEach((ch, i) => {
-      if (Math.random() < progress / chars.length) {
-        ch.textContent = textContent[i] === " " ? "\u00A0" : textContent[i];
+function runDecryption(){
+  let progress=0;
+  const interval=setInterval(()=>{
+    chars.forEach((ch,i)=>{
+      if(Math.random()<progress/chars.length){
+        ch.textContent=textContent[i]===" " ? "\u00A0" : textContent[i];
       } else {
-        ch.textContent = String.fromCharCode(33 + Math.random() * 94);
+        ch.textContent=String.fromCharCode(33+Math.random()*94);
       }
     });
     progress++;
-    if (progress > chars.length) clearInterval(interval);
-  }, 50);
+    if(progress>chars.length) clearInterval(interval);
+  },50);
 }
 
-/* Fade + decrypt paragraph only after reincarnated text is gone */
-const paragraphContainer = document.getElementById("paragraphContainer");
-const disappearEnd = 1800; // match value from scroll-text animation
-
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
-
-  if (scrollY > disappearEnd) {
-    // fade in + run animation
-    paragraphContainer.style.opacity = 1;
-    paragraphContainer.style.transform = "translateY(0)";
-    if (!paragraphContainer.dataset.activated) {
-      paragraphContainer.dataset.activated = "true";
+const paraAppearStart=1900,paraAppearEnd=2200,paraDisappearStart=2800,paraDisappearEnd=3100,paraMoveDistance=40;
+window.addEventListener("scroll", ()=>{
+  const scrollY=window.scrollY;
+  if(scrollY<paraAppearStart){
+    paragraphScroll.style.opacity=0;
+    paragraphScroll.style.transform=`translate(-50%,${paraMoveDistance}px)`;
+  } else if(scrollY>=paraAppearStart && scrollY<=paraAppearEnd){
+    const progress=(scrollY-paraAppearStart)/(paraAppearEnd-paraAppearStart);
+    paragraphScroll.style.opacity=progress;
+    paragraphScroll.style.transform=`translate(-50%,${paraMoveDistance*(1-progress)}px)`;
+    if(!paragraphScroll.dataset.activated){
+      paragraphScroll.dataset.activated="true";
       runDecryption();
-      setInterval(runDecryption, 5000);
+      setInterval(runDecryption,5000);
     }
-  } else {
-    // keep hidden until reincarnated text is gone
-    paragraphContainer.style.opacity = 0;
-    paragraphContainer.style.transform = "translateY(20px)";
+  } else if(scrollY>paraAppearEnd && scrollY<paraDisappearStart){
+    paragraphScroll.style.opacity=1;
+    paragraphScroll.style.transform="translate(-50%,0)";
+  } else if(scrollY>=paraDisappearStart && scrollY<=paraDisappearEnd){
+    const progress=1-(scrollY-paraDisappearStart)/(paraDisappearEnd-paraDisappearStart);
+    paragraphScroll.style.opacity=progress;
+    paragraphScroll.style.transform=`translate(-50%,${-paraMoveDistance*(1-progress)}px)`;
+  } else{
+    paragraphScroll.style.opacity=0;
+    paragraphScroll.style.transform=`translate(-50%,${-paraMoveDistance}px)`;
   }
 });
-</script> 
-</body> 
+
+/* Noise overlay */
+const canvas=document.getElementById('noiseCanvas');
+const ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+function generateNoise(){
+  const imageData=ctx.createImageData(canvas.width,canvas.height);
+  const buffer=new Uint32Array(imageData.data.buffer);
+  for(let i=0;i<buffer.length;i++){
+    const val=Math.random()*255|0;
+    buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
+  }
+  ctx.putImageData(imageData,0,0);
+}
+function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
+loopNoise();
+</script>
+</body>
 </html>
