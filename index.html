@@ -4,7 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kendrick Lamar Parallax Landing</title>
+  
 <style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Fredericka+the+Great&family=Meie+Script&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap" rel="stylesheet">
+  
+  
   body {
     margin: 0;
     height: 800vh; /* Enough height for scrolling */
@@ -12,6 +23,24 @@
     overflow-x: hidden;
     font-family: 'EB Garamond', serif;
   }
+
+  .doto {
+  font-family: "Doto", sans-serif;
+  font-weight: 400; /* can be 100–900 */
+}
+
+.fredericka {
+  font-family: "Fredericka the Great", serif;
+}
+
+.meie {
+  font-family: "Meie Script", cursive;
+}
+
+.unifraktur {
+  font-family: "UnifrakturCook", cursive;
+  font-weight: 700;
+}
 
   /* Parallax container */
   .parallax-container {
@@ -75,12 +104,12 @@
 
   /* Font cycling for the word "love" */
  @keyframes fontCycle {
-  0% { font-family: 'EB Garamond', serif; }
-  20% { font-family: 'Orbitron', sans-serif; }
-  40% { font-family: 'Play', monospace; }
-  60% { font-family: 'Righteous', cursive; }
-  80% { font-family: 'Jacquard 12', sans-serif; }
-  100% { font-family: 'EB Garamond', monospace; }
+  0%   { font-family: 'EB Garamond', serif; }
+  20%  { font-family: 'Doto', sans-serif; }
+  40%  { font-family: 'Fredericka the Great', serif; }
+  60%  { font-family: 'Meie Script', cursive; }
+  80%  { font-family: 'UnifrakturCook', cursive; }
+  100% { font-family: 'EB Garamond', serif; }
 }
 
 .scroll-word.love.animate-font {
