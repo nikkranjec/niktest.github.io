@@ -31,8 +31,12 @@ body {
 }
 
 .element { position: absolute; transition: transform 0.2s ease-out; }
-.element img { width: 600px; }
-  .element img:hover {
+.img-wrapper img {
+  width: 600px;
+  transition: transform 0.2s ease-out;
+}
+
+.img-wrapper img:hover {
   transform: scale(1.1);
 }
   
@@ -142,14 +146,46 @@ body {
 
 <!-- Parallax images -->
 <div class="parallax-container">
-  <div class="element" style="top:20%; left:33%;" id="elem2"><img src="magazine.webp" alt="magazine"></div>
-  <div class="element" style="top:5%; left:50%;" id="elem4"><img src="cacao.webp" alt="cacao"></div>
-  <div class="element" style="top:45%; left:20%;" id="elem1"><img src="Nik Muvit.webp" alt="muvit"></div>
-  <div class="element" style="top:-7%; left:24%;" id="elem5"><img src="nik barcelona.webp" alt="barcelona"></div>
-  <div class="element" style="top:20%; left:12%;" id="elem6"><img src="liza.webp" alt="liza"></div>
-  <div class="element" style="top:48%; left:38%;" id="elem7"><img src="kolo.webp" alt="kolo"></div>
-  <div class="element" style="top:30%; left:53%;" id="elem8"><img src="lips.webp" alt="love in plane sight"></div>
-  <div class="element" style="top:-20%; left:40%;" id="elem9"><img src="eve.webp" alt="eve"></div>
+  <div class="element" style="top:20%; left:33%;" id="elem2">
+    <div class="img-wrapper">
+      <img src="magazine.webp" alt="magazine">
+    </div>
+  </div>
+  <div class="element" style="top:5%; left:50%;" id="elem4">
+    <div class="img-wrapper">
+      <img src="cacao.webp" alt="cacao">
+    </div>
+  </div>
+  <div class="element" style="top:45%; left:20%;" id="elem1">
+    <div class="img-wrapper">
+      <img src="Nik Muvit.webp" alt="muvit">
+    </div>
+  </div>
+  <div class="element" style="top:-7%; left:24%;" id="elem5">
+    <div class="img-wrapper">
+      <img src="nik barcelona.webp" alt="barcelona">
+    </div>
+  </div>
+  <div class="element" style="top:20%; left:12%;" id="elem6">
+    <div class="img-wrapper">
+      <img src="liza.webp" alt="liza">
+    </div>
+  </div>
+  <div class="element" style="top:48%; left:38%;" id="elem7">
+    <div class="img-wrapper">
+      <img src="kolo.webp" alt="kolo">
+    </div>
+  </div>
+  <div class="element" style="top:30%; left:53%;" id="elem8">
+    <div class="img-wrapper">
+      <img src="lips.webp" alt="love in plane sight">
+    </div>
+  </div>
+  <div class="element" style="top:-20%; left:40%;" id="elem9">
+    <div class="img-wrapper">
+      <img src="eve.webp" alt="eve">
+    </div>
+  </div>
   <div class="element element-text" style="top:45%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
