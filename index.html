@@ -32,6 +32,10 @@ body {
 
 .element { position: absolute; transition: transform 0.2s ease-out; }
 .element img { width: 600px; }
+  .element img:hover {
+  transform: scale(1.1);
+}
+  
 .element-text {
   color: hsl(0,0%,10%);
   font-size: 48px;
@@ -114,7 +118,7 @@ body {
 .social-btn {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 0%;
   overflow: hidden;        /* crop image to circle */
   display: flex;
   justify-content: center;
@@ -130,8 +134,7 @@ body {
 }
 
 .social-btn:hover {
-  transform: scale(1.2);
-  background: #f0f0f0;    /* optional hover color */
+  transform: scale(1.1);
 }
   
 </style>
@@ -177,7 +180,7 @@ body {
     <img src="youtube.png" alt="Youtube">
   </a>
   <a href="https://linkedin.com" class="social-btn" target="_blank">
-    <img src="linkedin-icon.png" alt="LinkedIn">
+    <img src="linkedin.png" alt="LinkedIn">
   </a>
   <a href="mailto:nik.kranjec@gmail.com" class="social-btn" target="_blank">
   <img src="email.png" alt="Email">
