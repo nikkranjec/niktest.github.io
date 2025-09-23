@@ -13,13 +13,12 @@
 <style>
   body {
     margin: 0;
-    height: 800vh; /* Long scroll */
+    height: 800vh;
     background: #010100;
     overflow-x: hidden;
     font-family: 'EB Garamond', serif;
   }
 
-  /* Parallax container */
   .parallax-container {
     position: fixed;
     top: 0;
@@ -29,15 +28,8 @@
     pointer-events: none;
   }
 
-  .element {
-    position: absolute;
-    transition: transform 0.2s ease-out;
-  }
-
-  .element img {
-    width: 600px;
-  }
-
+  .element { position: absolute; transition: transform 0.2s ease-out; }
+  .element img { width: 600px; }
   .element-text {
     color: hsl(0, 0%, 10%);
     font-size: 48px;
@@ -64,30 +56,19 @@
     font-weight: bold;
     color: white;
     opacity: 0;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    transition: opacity 0.5s ease-out;
   }
 
+  /* Lock "Love" so it doesn't shift layout */
   .love-wrapper {
     display: inline-block;
-    width: 40px; /* lock width so "Love" doesn’t shift layout */
+    width: 6ch;       /* reserve space for widest font */
     text-align: center;
-    position: relative;
   }
-  
-  .love {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      height: 1.5em;     /* adjust if the word still jumps */
-      min-width: 5ch;   /* reserve enough width for widest font */
-      line-height: 1em;
-      vertical-align: middle;
-    }
 
-  .scroll-word.love {
-    position: absolute;
-    left: 0;
-    right: 0;
+  .love {
+    display: inline-block;
+    line-height: 1;
   }
 
   /* Font cycling */
@@ -95,7 +76,7 @@
     0%   { font-family: 'EB Garamond', serif; }
     20%  { font-family: 'Doto', sans-serif; }
     40%  { font-family: 'Fredericka the Great', serif; }
-    60%  { font-family: 'Arial', cursive; }
+    60%  { font-family: 'Meie Script', cursive; }
     80%  { font-family: 'UnifrakturCook', cursive; }
     100% { font-family: 'EB Garamond', serif; }
   }
@@ -119,42 +100,22 @@
 
 <!-- Parallax images -->
 <div class="parallax-container">
-  <div class="element" style="top:20%; left:33%;" id="elem2">
-    <img src="magazine.webp" alt="magazine">
-  </div>
-  <div class="element" style="top:5%; left:50%;" id="elem4">
-    <img src="cacao.webp" alt="cacao">
-  </div>
-  <div class="element" style="top:45%; left:20%;" id="elem1">
-    <img src="Nik Muvit.webp" alt="muvit">
-  </div>
-  <div class="element" style="top:-7%; left:24%;" id="elem5">
-    <img src="nik barcelona.webp" alt="barcelona">
-  </div>
-  <div class="element" style="top:20%; left:12%;" id="elem6">
-    <img src="liza.webp" alt="liza">
-  </div>
-  <div class="element" style="top:48%; left:38%;" id="elem7">
-    <img src="kolo.webp" alt="kolo">
-  </div>
-  <div class="element" style="top:30%; left:53%;" id="elem8">
-    <img src="lips.webp" alt="love in plane sight">
-  </div>
-  <div class="element" style="top:-20%; left:40%;" id="elem9">
-    <img src="eve.webp" alt="eve">
-  </div>
-  <div class="element element-text" style="top:45%; left:43%;" id="elem3">
-    nik kranjec
-  </div>
+  <div class="element" style="top:20%; left:33%;" id="elem2"><img src="magazine.webp" alt="magazine"></div>
+  <div class="element" style="top:5%; left:50%;" id="elem4"><img src="cacao.webp" alt="cacao"></div>
+  <div class="element" style="top:45%; left:20%;" id="elem1"><img src="Nik Muvit.webp" alt="muvit"></div>
+  <div class="element" style="top:-7%; left:24%;" id="elem5"><img src="nik barcelona.webp" alt="barcelona"></div>
+  <div class="element" style="top:20%; left:12%;" id="elem6"><img src="liza.webp" alt="liza"></div>
+  <div class="element" style="top:48%; left:38%;" id="elem7"><img src="kolo.webp" alt="kolo"></div>
+  <div class="element" style="top:30%; left:53%;" id="elem8"><img src="lips.webp" alt="love in plane sight"></div>
+  <div class="element" style="top:-20%; left:40%;" id="elem9"><img src="eve.webp" alt="eve"></div>
+  <div class="element element-text" style="top:45%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
 <!-- Scroll-triggered text -->
 <div class="scroll-text-container" id="scrollText">
   <span class="scroll-word" id="word1">reincarnated</span>
   <span class="scroll-word" id="word2">with</span>
-  <span class="love-wrapper">
-    <span class="scroll-word love" id="word3">Love</span>
-  </span>
+  <span class="love-wrapper"><span class="scroll-word love" id="word3">Love</span></span>
 </div>
 
 <!-- Noise overlay -->
@@ -183,7 +144,7 @@
     });
   });
 
-  /* Scroll-triggered text */
+  /* Scroll-triggered text animation */
   const scrollText = document.getElementById("scrollText");
   const words = [
     document.getElementById("word1"),
@@ -196,90 +157,52 @@
     const appearStart = 500;
     const appearEnd = 800;
     const disappearStart = 1500;
-    const disappearEnd = 1700;
+    const disappearEnd = 1800;
 
     if (scrollY < appearStart) {
-      // Before animation
       scrollText.style.opacity = 0;
       scrollText.style.transform = "translate(-50%, 40px)";
-      words.forEach((w) => {
-        w.style.opacity = 0;
-        w.classList.remove("animate-font");
-      });
+      words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
     } else if (scrollY >= appearStart && scrollY <= appearEnd) {
-      // Fade in
       const progress = (scrollY - appearStart) / (appearEnd - appearStart);
       scrollText.style.opacity = progress;
-      scrollText.style.transform = `translate(-50%, ${40 - 40 * progress}px)`;
-
-      words.forEach((w, i) => {
-        setTimeout(() => {
-          w.style.opacity = progress;
-          if (w.id === "word3") w.classList.add("animate-font");
-        }, i * 200);
-      });
+      scrollText.style.transform = `translate(-50%, ${40 - 40*progress}px)`;
+      words.forEach(w => { w.style.opacity = progress; if (w.id==="word3") w.classList.add("animate-font"); });
     } else if (scrollY > appearEnd && scrollY < disappearStart) {
-      // Fully visible
       scrollText.style.opacity = 1;
       scrollText.style.transform = "translate(-50%, 0)";
-      words.forEach((w) => {
-        w.style.opacity = 1;
-        if (w.id === "word3") w.classList.add("animate-font");
-      });
+      words.forEach(w => { w.style.opacity = 1; if (w.id==="word3") w.classList.add("animate-font"); });
     } else if (scrollY >= disappearStart && scrollY <= disappearEnd) {
-      // Fade out
-      const progress =
-        1 - (scrollY - disappearStart) / (disappearEnd - disappearStart);
+      const progress = 1 - (scrollY - disappearStart) / (disappearEnd - disappearStart);
       scrollText.style.opacity = progress;
-      scrollText.style.transform = `translate(-50%, ${40 * (1 - progress)}px)`;
-      words.forEach((w) => {
-        w.style.opacity = progress;
-      });
+      scrollText.style.transform = `translate(-50%, ${40*(1-progress)}px)`;
+      words.forEach(w => { w.style.opacity = progress; });
     } else {
-      // After disappear
       scrollText.style.opacity = 0;
-      scrollText.style.transform = "translate(50%, 40px)";
-      words.forEach((w) => {
-        w.style.opacity = 0;
-        w.classList.remove("animate-font");
-      });
+      scrollText.style.transform = "translate(-50%, 40px)";
+      words.forEach(w => { w.style.opacity = 0; w.classList.remove("animate-font"); });
     }
   });
 
   /* Noise overlay */
   const canvas = document.getElementById('noiseCanvas');
   const ctx = canvas.getContext('2d');
-
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
   function generateNoise() {
     const imageData = ctx.createImageData(canvas.width, canvas.height);
     const buffer = new Uint32Array(imageData.data.buffer);
-
-    for (let i = 0; i < buffer.length; i++) {
-      const val = Math.random() * 255 | 0;
-      buffer[i] =
-        (255 << 24) |   // alpha
-        (val << 16) |   // red
-        (val << 8)  |   // green
-        val;            // blue
+    for (let i=0;i<buffer.length;i++){
+      const val=Math.random()*255|0;
+      buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
     }
-
-    ctx.putImageData(imageData, 0, 0);
+    ctx.putImageData(imageData,0,0);
   }
 
-  function loopNoise() {
-    generateNoise();
-    requestAnimationFrame(loopNoise);
-  }
-
+  function loopNoise(){ generateNoise(); requestAnimationFrame(loopNoise); }
   loopNoise();
 </script>
-
 </body>
 </html>
