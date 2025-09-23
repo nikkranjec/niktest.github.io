@@ -92,6 +92,8 @@ body {
   transition: opacity 0.4s ease-out, transform 0.4s ease-out;
   white-space: normal;
   text-align: justify;
+  word-break: normal;       /* prevents breaking words in the middle */
+  overflow-wrap: break-word;   /* moves long words to next line if needed */
 }
 
 .decrypted-char { display: inline-block; white-space: pre; }
