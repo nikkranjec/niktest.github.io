@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Kendrick Lamar Parallax Landing</title>
 
 <!-- Fonts -->
@@ -11,135 +11,159 @@
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Fredericka+the+Great&family=Meie+Script&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 
 <style>
-body {
-  margin: 0;
-  height: 350vh;
-  background: #010100;
-  overflow-x: hidden;
-  font-family: 'EB Garamond', serif;
-  color: white;
-}
+  body {
+    margin: 0;
+    height: 350vh;
+    background: #010100;
+    overflow-x: hidden;
+    font-family: 'EB Garamond', serif;
+    color: white;
+  }
 
-/* Parallax container */
-.parallax-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
+  /* Parallax container - keep pointer-events none so page below is scrollable;
+     child wrappers will re-enable pointer-events for hover/interactions. */
+  .parallax-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
 
-.element { position: absolute; transition: transform 0.2s ease-out; }
-.img-wrapper img {
-  width: 600px;
-  transition: transform 0.2s ease-out;
-}
+  .element {
+    position: absolute;
+    transition: transform 0.2s ease-out;
+    /* keep pointer-events: none here so only the wrapper handles interactions */
+  }
 
-.img-wrapper img:hover {
-  transform: scale(1.5);
-}
-  
-.element-text {
-  color: hsl(0,0%,10%);
-  font-size: 48px;
-  font-weight: bold;
-  text-transform: lowercase;
-}
+  /* wrapper that holds the image — re-enable pointer events and animate float */
+  .img-wrapper {
+    pointer-events: auto;                 /* ENABLE hover & clicks */
+    display: inline-block;
+    transform-origin: center;
+    will-change: transform;
+    animation: float 6s ease-in-out infinite;
+  }
 
-/* Scroll-triggered text */
-.scroll-text-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 40px);
-  display: flex;
-  gap: 20px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-}
+  /* slight random jitter on animation start will be added by JS */
+  .img-wrapper img {
+    width: 600px;
+    display: block;
+    transition: transform 220ms cubic-bezier(.2,.9,.2,1);
+    transform-origin: center center;
+    will-change: transform;
+    /* no pointer-events here needed — wrapper handles it */
+  }
 
-.scroll-word {
-  font-size: 22px;
-  font-weight: bold;
-  color: white;
-  opacity: 0;
-  transition: opacity 0.4s ease-out;
-}
+  /* Hover scale on the image alone (won't override parallax translate on parent) */
+  .img-wrapper img:hover {
+    transform: scale(1.12);
+  }
 
-.love-wrapper { display: inline-block; width: 6ch; text-align: center; }
-.love { display: inline-block; line-height: 1.4; }
+  /* gentle float animation (translate + tiny rotation) */
+  @keyframes float {
+    0% { transform: translateY(0px) rotate(-0.6deg); }
+    50% { transform: translateY(-8px) rotate(0.6deg); }
+    100% { transform: translateY(0px) rotate(-0.6deg); }
+  }
 
-@keyframes fontCycle {
-  0%   { font-family: 'EB Garamond', serif; }
-  20%  { font-family: 'Doto', sans-serif; }
-  40%  { font-family: 'Fredericka the Great', serif; }
-  60%  { font-family: 'Arial', cursive; }
-  80%  { font-family: 'Comic Sans MS', serif; }
-  100% { font-family: 'Impact', serif; }
-}
+  .element-text {
+    color: hsl(0,0%,10%);
+    font-size: 48px;
+    font-weight: bold;
+    text-transform: lowercase;
+  }
 
-.scroll-word.love.animate-font {
-  animation: fontCycle 2.5s infinite linear;
-}
+  /* Scroll-triggered text */
+  .scroll-text-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 40px);
+    display: flex;
+    gap: 20px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+  .scroll-word {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+  .love-wrapper { display: inline-block; width: 6ch; text-align: center; }
+  .love { display: inline-block; line-height: 1.4; }
 
-/* Noise overlay */
-.noise-overlay { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; opacity:0.15; z-index:9999; }
+  @keyframes fontCycle {
+    0%   { font-family: 'EB Garamond', serif; }
+    20%  { font-family: 'Doto', sans-serif; }
+    40%  { font-family: 'Fredericka the Great', serif; }
+    60%  { font-family: 'Arial', cursive; }
+    80%  { font-family: 'Comic Sans MS', serif; }
+    100% { font-family: 'Impact', serif; }
+  }
+  .scroll-word.love.animate-font { animation: fontCycle 2.5s infinite linear; }
 
-/* Paragraph */
-#paragraphContainer {
-  position: fixed;
-  left: 50%;
-  top: 70%;
-  transform: translate(-50%, 40px);
-  max-width: 700px;
-  font-size: 18px;
-  line-height: 1.6;
-  opacity: 0;
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-  white-space: normal;
-  text-align: justify;
-  word-break: normal;       /* prevents breaking words in the middle */
-  overflow-wrap: break-word;   /* moves long words to next line if needed */
-}
+  /* Noise overlay */
+  .noise-overlay {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none;
+    opacity:0.12;
+    z-index:9999;
+  }
 
-.decrypted-char { display: inline-block; white-space: pre; }
-
+  /* Paragraph */
+  #paragraphContainer {
+    position: fixed;
+    left: 50%;
+    top: 70%;
+    transform: translate(-50%, 40px);
+    max-width: 700px;
+    font-size: 18px;
+    line-height: 1.6;
+    opacity: 0;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    white-space: normal;
+    text-align: justify;
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+  .decrypted-char { display: inline-block; white-space: pre; }
 
   /* social buttons */
-#socialsContainer {
-  position: fixed;
-  left: 50%;
-  bottom: 3%;             /* distance from bottom of screen */
-  transform: translateX(-50%);
-  display: flex;
-  gap: 15px;               /* space between buttons */
-  opacity: 0;              /* start hidden, fade in later */
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
+  #socialsContainer {
+    position: fixed;
+    left: 50%;
+    bottom: 3%;
+    transform: translateX(-50%) translateY(20px);
+    display: flex;
+    gap: 15px;
+    opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: auto;
+  }
 
-.social-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 0%;
-  overflow: hidden;        /* crop image to circle */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.social-btn img {
-  width: 70%;              /* scale image inside button */
-  height: 70%;
-  object-fit: contain;
-}
-
-.social-btn:hover {
-  transform: scale(1.1);
-}
-  
+  .social-btn {
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.18s ease, background 0.18s ease;
+    background: transparent;
+  }
+  .social-btn img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+    display: block;
+  }
+  .social-btn:hover { transform: scale(1.08); }
 </style>
 </head>
 <body>
@@ -147,45 +171,37 @@ body {
 <!-- Parallax images -->
 <div class="parallax-container">
   <div class="element" style="top:20%; left:33%;" id="elem2">
-    <div class="img-wrapper">
-      <img src="magazine.webp" alt="magazine">
-    </div>
+    <div class="img-wrapper"><img src="magazine.webp" alt="magazine"></div>
   </div>
+
   <div class="element" style="top:5%; left:50%;" id="elem4">
-    <div class="img-wrapper">
-      <img src="cacao.webp" alt="cacao">
-    </div>
+    <div class="img-wrapper"><img src="cacao.webp" alt="cacao"></div>
   </div>
+
   <div class="element" style="top:45%; left:20%;" id="elem1">
-    <div class="img-wrapper">
-      <img src="Nik Muvit.webp" alt="muvit">
-    </div>
+    <div class="img-wrapper"><img src="Nik Muvit.webp" alt="muvit"></div>
   </div>
+
   <div class="element" style="top:-7%; left:24%;" id="elem5">
-    <div class="img-wrapper">
-      <img src="nik barcelona.webp" alt="barcelona">
-    </div>
+    <div class="img-wrapper"><img src="nik barcelona.webp" alt="barcelona"></div>
   </div>
+
   <div class="element" style="top:20%; left:12%;" id="elem6">
-    <div class="img-wrapper">
-      <img src="liza.webp" alt="liza">
-    </div>
+    <div class="img-wrapper"><img src="liza.webp" alt="liza"></div>
   </div>
+
   <div class="element" style="top:48%; left:38%;" id="elem7">
-    <div class="img-wrapper">
-      <img src="kolo.webp" alt="kolo">
-    </div>
+    <div class="img-wrapper"><img src="kolo.webp" alt="kolo"></div>
   </div>
+
   <div class="element" style="top:30%; left:53%;" id="elem8">
-    <div class="img-wrapper">
-      <img src="lips.webp" alt="love in plane sight">
-    </div>
+    <div class="img-wrapper"><img src="lips.webp" alt="love in plane sight"></div>
   </div>
+
   <div class="element" style="top:-20%; left:40%;" id="elem9">
-    <div class="img-wrapper">
-      <img src="eve.webp" alt="eve">
-    </div>
+    <div class="img-wrapper"><img src="eve.webp" alt="eve"></div>
   </div>
+
   <div class="element element-text" style="top:45%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
@@ -205,23 +221,13 @@ body {
 
 <!-- Social buttons container -->
 <div id="socialsContainer">
-  <a href="https://www.instagram.com/nikkranjec/" class="social-btn" target="_blank">
-    <img src="instagram.png" alt="Instagram">
-  </a>
-  <a href="https://www.tiktok.com/@nikkranjec" class="social-btn" target="_blank">
-    <img src="tiktok.png" alt="TikTok">
-  </a>
-  <a href="https://www.youtube.com/@nikkranjec" class="social-btn" target="_blank">
-    <img src="youtube.png" alt="Youtube">
-  </a>
-  <a href="https://linkedin.com" class="social-btn" target="_blank">
-    <img src="linkedin.png" alt="LinkedIn">
-  </a>
-  <a href="mailto:nik.kranjec@gmail.com" class="social-btn" target="_blank">
-  <img src="email.png" alt="Email">
-</a>
+  <a href="https://www.instagram.com/nikkranjec/" class="social-btn" target="_blank"><img src="instagram.png" alt="Instagram"></a>
+  <a href="https://www.tiktok.com/@nikkranjec" class="social-btn" target="_blank"><img src="tiktok.png" alt="TikTok"></a>
+  <a href="https://www.youtube.com/@nikkranjec" class="social-btn" target="_blank"><img src="youtube.png" alt="Youtube"></a>
+  <a href="https://linkedin.com" class="social-btn" target="_blank"><img src="linkedin.png" alt="LinkedIn"></a>
+  <a href="mailto:nik.kranjec@gmail.com" class="social-btn" target="_blank"><img src="email.png" alt="Email"></a>
 </div>
-  
+
 <!-- Noise overlay -->
 <canvas class="noise-overlay" id="noiseCanvas"></canvas>
 
@@ -238,6 +244,13 @@ const elements = [
   {el: document.getElementById('elem8'), speed: 0.35},
   {el: document.getElementById('elem9'), speed: 0.34},
 ];
+
+/* small random stagger for the float animation so they don't move in perfect sync */
+elements.forEach(({el})=>{
+  const wrapper = el.querySelector('.img-wrapper');
+  if(wrapper) wrapper.style.animationDelay = `${(Math.random()*2).toFixed(2)}s`;
+});
+
 window.addEventListener('scroll', ()=>{
   const scrollY = window.scrollY;
   elements.forEach(({el,speed})=>{
@@ -355,9 +368,9 @@ window.addEventListener("scroll", ()=>{
     paragraph.style.transform = `translate(-50%, ${-paraMoveDistance}px)`;
   }
 });
-  
+
 /* ------------------ social buttons ------------------ */
-  const socials = document.getElementById("socialsContainer");
+const socials = document.getElementById("socialsContainer");
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
   const trigger = paraAppearEnd + 50; // after paragraph fully visible
