@@ -20,6 +20,7 @@
     color: white;
   }
 
+  /* Parallax container */
   .parallax-container {
     position: fixed;
     top: 0;
@@ -32,7 +33,13 @@
   .element {
     position: absolute;
     transition: transform 0.2s ease-out;
+    --base-scale: 1; /* default scale */
   }
+
+  /* Example custom scales */
+  #elem1 { --base-scale: 3.8; }
+  #elem2 { --base-scale: 1.1; }
+  #elem4 { --base-scale: 0.9; }
 
   .img-wrapper {
     pointer-events: auto;
@@ -51,7 +58,7 @@
   }
 
   .img-wrapper img:hover {
-    transform: scale(1.12);
+    transform: scale(1.08);
   }
 
   @keyframes float {
@@ -67,6 +74,7 @@
     text-transform: lowercase;
   }
 
+  /* Scroll-triggered text */
   .scroll-text-container {
     position: fixed;
     top: 50%;
@@ -98,6 +106,7 @@
   }
   .scroll-word.love.animate-font { animation: fontCycle 2.5s infinite linear; }
 
+  /* Noise overlay */
   .noise-overlay {
     position: fixed; top:0; left:0;
     width:100%; height:100%;
@@ -106,6 +115,7 @@
     z-index:9999;
   }
 
+  /* Paragraph */
   #paragraphContainer {
     position: fixed;
     left: 50%;
@@ -123,6 +133,7 @@
   }
   .decrypted-char { display: inline-block; white-space: pre; }
 
+  /* social buttons */
   #socialsContainer {
     position: fixed;
     left: 50%;
@@ -156,54 +167,50 @@
 </head>
 <body>
 
+<!-- Parallax images -->
 <div class="parallax-container">
-  <div class="element" style="top:20%; left:33%; --base-scale:1.2;" id="elem2">
+  <div class="element" style="top:20%; left:33%;" id="elem2">
     <div class="img-wrapper"><img src="magazine.webp" alt="magazine"></div>
   </div>
-
-  <div class="element" style="top:5%; left:50%; --base-scale:0.9;" id="elem4">
+  <div class="element" style="top:5%; left:50%;" id="elem4">
     <div class="img-wrapper"><img src="cacao.webp" alt="cacao"></div>
   </div>
-
-  <div class="element" style="top:45%; left:20%; --base-scale:1;" id="elem1">
+  <div class="element" style="top:45%; left:20%;" id="elem1">
     <div class="img-wrapper"><img src="Nik Muvit.webp" alt="muvit"></div>
   </div>
-
-  <div class="element" style="top:-7%; left:24%; --base-scale:1.1;" id="elem5">
+  <div class="element" style="top:-7%; left:24%;" id="elem5">
     <div class="img-wrapper"><img src="nik barcelona.webp" alt="barcelona"></div>
   </div>
-
-  <div class="element" style="top:20%; left:12%; --base-scale:0.95;" id="elem6">
+  <div class="element" style="top:20%; left:12%;" id="elem6">
     <div class="img-wrapper"><img src="liza.webp" alt="liza"></div>
   </div>
-
-  <div class="element" style="top:48%; left:38%; --base-scale:1;" id="elem7">
+  <div class="element" style="top:48%; left:38%;" id="elem7">
     <div class="img-wrapper"><img src="kolo.webp" alt="kolo"></div>
   </div>
-
-  <div class="element" style="top:30%; left:53%; --base-scale:1.05;" id="elem8">
+  <div class="element" style="top:30%; left:53%;" id="elem8">
     <div class="img-wrapper"><img src="lips.webp" alt="love in plane sight"></div>
   </div>
-
-  <div class="element" style="top:-20%; left:40%; --base-scale:1;" id="elem9">
+  <div class="element" style="top:-20%; left:40%;" id="elem9">
     <div class="img-wrapper"><img src="eve.webp" alt="eve"></div>
   </div>
-
   <div class="element element-text" style="top:45%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
+<!-- Scroll-triggered text -->
 <div class="scroll-text-container" id="scrollText">
   <span class="scroll-word" id="word1">reincarnated</span>
   <span class="scroll-word" id="word2">with</span>
   <span class="love-wrapper"><span class="scroll-word love" id="word3">Love</span></span>
 </div>
 
+<!-- Paragraph -->
 <div id="paragraphContainer">
   <span id="decryptedText">
     I am evolving. The skills and forms I once mastered no longer define me. So I am dedicating this space to be a playground for exploration. A space where curiosity and creation meet. Here, we explore what it means to reconnect with oneself, with others, with the world. Through workshops, personal projects, and shared expressions, I invite experiences that awaken creativity, presence, and joy. What you see here is only the beginning. More will unfold as these explorations take shape.
   </span>
 </div>
 
+<!-- Social buttons container -->
 <div id="socialsContainer">
   <a href="https://www.instagram.com/nikkranjec/" class="social-btn" target="_blank"><img src="instagram.png" alt="Instagram"></a>
   <a href="https://www.tiktok.com/@nikkranjec" class="social-btn" target="_blank"><img src="tiktok.png" alt="TikTok"></a>
@@ -212,6 +219,7 @@
   <a href="mailto:nik.kranjec@gmail.com" class="social-btn" target="_blank"><img src="email.png" alt="Email"></a>
 </div>
 
+<!-- Noise overlay -->
 <canvas class="noise-overlay" id="noiseCanvas"></canvas>
 
 <script>
@@ -228,18 +236,145 @@ const elements = [
   {el: document.getElementById('elem9'), speed: 0.34},
 ];
 
+elements.forEach(({el})=>{
+  const wrapper = el.querySelector('.img-wrapper');
+  if(wrapper) wrapper.style.animationDelay = `${(Math.random()*2).toFixed(2)}s`;
+});
+
 function updateParallax() {
   const scrollY = window.scrollY;
-  elements.forEach(({el, speed})=>{
-    const scale = Math.max(0.5, 1 - scrollY * 0.0005);
+  elements.forEach(({el,speed})=>{
+    const scale = Math.max(0.5,1-scrollY*0.0005);
     const baseScale = parseFloat(getComputedStyle(el).getPropertyValue('--base-scale')) || 1;
-    const translateY = -scrollY * speed;
-    el.style.transform = `translateY(${translateY}px) scale(${baseScale * scale})`;
+    const translateY=-scrollY*speed;
+    el.style.transform=`translateY(${translateY}px) scale(${baseScale * scale})`;
   });
 }
-
 window.addEventListener('scroll', updateParallax);
-window.addEventListener('load', updateParallax); // run once on load
+window.addEventListener('load', updateParallax); // ✅ apply immediately on load
+
+/* ------------------ Scroll-triggered "reincarnated" text ------------------ */
+const scrollText = document.getElementById("scrollText");
+const words = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
+const appearStart=500,appearEnd=800,disappearStart=1500,disappearEnd=1800,moveDistance=40;
+
+window.addEventListener("scroll", ()=>{
+  const scrollY = window.scrollY;
+  if(scrollY<appearStart){
+    scrollText.style.opacity=0;
+    scrollText.style.transform=`translate(-50%,${moveDistance}px)`;
+    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
+  } else if(scrollY>=appearStart && scrollY<=appearEnd){
+    const progress=(scrollY-appearStart)/(appearEnd-appearStart);
+    scrollText.style.opacity=progress;
+    scrollText.style.transform=`translate(-50%,${moveDistance*(1-progress)}px)`;
+    words.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
+  } else if(scrollY>appearEnd && scrollY<disappearStart){
+    scrollText.style.opacity=1;
+    scrollText.style.transform="translate(-50%,0)";
+    words.forEach(w=>{w.style.opacity=1; if(w.id==="word3") w.classList.add("animate-font");});
+  } else if(scrollY>=disappearStart && scrollY<=disappearEnd){
+    const progress=1-(scrollY-disappearStart)/(disappearEnd-disappearStart);
+    scrollText.style.opacity=progress;
+    scrollText.style.transform=`translate(-50%,${-moveDistance*(1-progress)}px)`;
+    words.forEach(w=>{w.style.opacity=progress;});
+  } else{
+    scrollText.style.opacity=0;
+    scrollText.style.transform=`translate(-50%,${-moveDistance}px)`;
+    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
+  }
+});
+
+/* ------------------ Noise overlay ------------------ */
+const canvas=document.getElementById('noiseCanvas'); 
+const ctx=canvas.getContext('2d');
+function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+function generateNoise(){
+  const imageData=ctx.createImageData(canvas.width,canvas.height);
+  const buffer=new Uint32Array(imageData.data.buffer);
+  for(let i=0;i<buffer.length;i++){
+    const val=Math.random()*255|0;
+    buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
+  }
+  ctx.putImageData(imageData,0,0);
+}
+function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
+loopNoise();
+
+/* ------------------ Paragraph decryption ------------------ */
+const paragraph = document.getElementById("paragraphContainer");
+const decryptedEl = document.getElementById("decryptedText");
+const textContent = decryptedEl.innerText.trim();
+decryptedEl.innerHTML = "";
+const chars = [];
+for (let c of textContent) {
+  const span = document.createElement("span");
+  span.className = "decrypted-char";
+  span.textContent = c===" " ? "\u00A0": c;
+  decryptedEl.appendChild(span);
+  chars.push(span);
+}
+
+function decryptOnce() {
+  let progress=0;
+  const interval = setInterval(()=>{
+    chars.forEach((ch,i)=>{
+      if(i<=progress) ch.textContent = textContent[i]===" " ? "\u00A0" : textContent[i];
+      else ch.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
+    });
+    progress++;
+    if(progress>=chars.length) clearInterval(interval);
+  },30);
+}
+
+/* ------------------ Paragraph scroll animation ------------------ */
+const paraAppearStart = disappearEnd + 50;
+const paraAppearEnd = paraAppearStart + 300;
+const paraDisappearStart = paraAppearEnd + 900;
+const paraDisappearEnd = paraDisappearStart + 300;
+const paraMoveDistance = 40;
+
+window.addEventListener("scroll", ()=>{
+  const scrollY = window.scrollY;
+  if(scrollY < paraAppearStart){
+    paragraph.style.opacity = 0;
+    paragraph.style.transform = `translate(-50%, ${paraMoveDistance}px)`;
+  } else if(scrollY >= paraAppearStart && scrollY <= paraAppearEnd){
+    const progress = (scrollY-paraAppearStart)/(paraAppearEnd-paraAppearStart);
+    paragraph.style.opacity = progress;
+    paragraph.style.transform = `translate(-50%, ${paraMoveDistance*(1-progress)}px)`;
+    if(!paragraph.dataset.activated){
+      paragraph.dataset.activated = "true";
+      decryptOnce();
+    }
+  } else if(scrollY > paraAppearEnd && scrollY < paraDisappearStart){
+    paragraph.style.opacity = 1;
+    paragraph.style.transform = "translate(-50%,0)";
+  } else if(scrollY >= paraDisappearStart && scrollY <= paraDisappearEnd){
+    const progress = 1-(scrollY-paraDisappearStart)/(paraDisappearEnd-paraDisappearStart);
+    paragraph.style.opacity = progress;
+    paragraph.style.transform = `translate(-50%, ${-paraMoveDistance*(1-progress)}px)`;
+  } else{
+    paragraph.style.opacity = 0;
+    paragraph.style.transform = `translate(-50%, ${-paraMoveDistance}px)`;
+  }
+});
+
+/* ------------------ social buttons ------------------ */
+const socials = document.getElementById("socialsContainer");
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+  const trigger = paraAppearEnd + 50;
+  if (scrollY > trigger) {
+    socials.style.opacity = 1;
+    socials.style.transform = "translateX(-50%) translateY(0)";
+  } else {
+    socials.style.opacity = 0;
+    socials.style.transform = "translateX(-50%) translateY(20px)";
+  }
+});
 </script>
 </body>
 </html>
