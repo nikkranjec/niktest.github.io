@@ -162,10 +162,13 @@
     opacity: 0;
     transition: opacity 0.4s ease-out, transform 0.4s ease-out;
     text-align: justify;
-    overflow-wrap: normal; /* don’t break words */
-    word-break: keep-all;  /* keep whole words */
+    overflow-wrap: normal;
+    word-break: keep-all;
   }
-  .decrypted-char { display: inline-block; white-space: pre; }
+  .decrypted-char {
+    display: inline;    /* FIX: allow natural wrapping */
+    white-space: pre;   /* preserve spaces */
+  }
 
   /* social buttons */
   #socialsContainer {
@@ -227,11 +230,11 @@
   <div class="element" style="top:-3%; left:37%;" id="elem9">
     <div class="img-wrapper"><img src="eve.webp" alt="eve"></div>
   </div>
-  <div class="element element-text" style="top:42%; left:43%;" id="elem3">nikkranjec</div>
+  <div class="element element-text" style="top:42%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
 <!-- Homepage Button -->
-<a href="https://nikkranjec.com/niktest.github.io/index.html" id="homeButton">nikkranjec</a>
+<a href="https://nikkranjec.com/niktest.github.io/index.html" id="homeButton">homepage</a>
 
 <!-- Scroll-triggered text -->
 <div class="scroll-text-container" id="scrollText">
@@ -330,110 +333,4 @@ window.addEventListener("scroll", ()=>{
     words.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
   } else if(scrollY>appearEnd && scrollY<disappearStart){
     scrollText.style.opacity=1;
-    scrollText.style.transform="translate(-50%,0)";
-    words.forEach(w=>{w.style.opacity=1; if(w.id==="word3") w.classList.add("animate-font");});
-  } else if(scrollY>=disappearStart && scrollY<=disappearEnd){
-    const progress=1-(scrollY-disappearStart)/(disappearEnd-disappearStart);
-    scrollText.style.opacity=progress;
-    scrollText.style.transform=`translate(-50%,${-moveDistance*(1-progress)}px)`;
-    words.forEach(w=>{w.style.opacity=progress;});
-  } else{
-    scrollText.style.opacity=0;
-    scrollText.style.transform=`translate(-50%,${-moveDistance}px)`;
-    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
-  }
-});
-
-/* ------------------ Noise overlay ------------------ */
-const canvas=document.getElementById('noiseCanvas'); 
-const ctx=canvas.getContext('2d');
-function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-function generateNoise(){
-  const imageData=ctx.createImageData(canvas.width,canvas.height);
-  const buffer=new Uint32Array(imageData.data.buffer);
-  for(let i=0;i<buffer.length;i++){
-    const val=Math.random()*255|0;
-    buffer[i]=(255<<24)|(val<<16)|(val<<8)|val;
-  }
-  ctx.putImageData(imageData,0,0);
-}
-function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
-loopNoise();
-
-/* ------------------ Paragraph decryption ------------------ */
-const paragraph = document.getElementById("paragraphContainer");
-const decryptedEl = document.getElementById("decryptedText");
-const textContent = decryptedEl.innerText.trim();
-decryptedEl.innerHTML = "";
-const chars = [];
-for (let c of textContent) {
-  const span = document.createElement("span");
-  span.className = "decrypted-char";
-  span.textContent = c===" " ? "\u00A0": c;
-  decryptedEl.appendChild(span);
-  chars.push(span);
-}
-
-function decryptOnce() {
-  let progress=0;
-  const interval = setInterval(()=>{
-    chars.forEach((ch,i)=>{
-      if(i<=progress) ch.textContent = textContent[i]===" " ? "\u00A0" : textContent[i];
-      else ch.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
-    });
-    progress++;
-    if(progress>=chars.length) clearInterval(interval);
-  },30);
-}
-
-/* ------------------ Paragraph scroll animation ------------------ */
-const paraAppearStart = disappearEnd + 50;
-const paraAppearEnd = paraAppearStart + 300;
-const paraDisappearStart = paraAppearEnd + 900;
-const paraDisappearEnd = paraDisappearStart + 300;
-const paraMoveDistance = 40;
-
-window.addEventListener("scroll", ()=>{
-  const scrollY = window.scrollY;
-  if(scrollY < paraAppearStart){
-    paragraph.style.opacity = 0;
-    paragraph.style.transform = `translate(-50%, ${paraMoveDistance}px)`;
-  } else if(scrollY >= paraAppearStart && scrollY <= paraAppearEnd){
-    const progress = (scrollY-paraAppearStart)/(paraAppearEnd-paraAppearStart);
-    paragraph.style.opacity = progress;
-    paragraph.style.transform = `translate(-50%, ${paraMoveDistance*(1-progress)}px)`;
-    if(!paragraph.dataset.activated){
-      paragraph.dataset.activated = "true";
-      decryptOnce();
-    }
-  } else if(scrollY > paraAppearEnd && scrollY < paraDisappearStart){
-    paragraph.style.opacity = 1;
-    paragraph.style.transform = "translate(-50%,0)";
-  } else if(scrollY >= paraDisappearStart && scrollY <= paraDisappearEnd){
-    const progress = 1-(scrollY-paraDisappearStart)/(paraDisappearEnd-paraDisappearStart);
-    paragraph.style.opacity = progress;
-    paragraph.style.transform = `translate(-50%, ${-paraMoveDistance*(1-progress)}px)`;
-  } else{
-    paragraph.style.opacity = 0;
-    paragraph.style.transform = `translate(-50%, ${-paraMoveDistance}px)`;
-  }
-});
-
-/* ------------------ social buttons ------------------ */
-const socials = document.getElementById("socialsContainer");
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
-  const trigger = paraAppearEnd + 50;
-  if (scrollY > trigger) {
-    socials.style.opacity = 1;
-    socials.style.transform = "translateX(-50%) translateY(0)";
-  } else {
-    socials.style.opacity = 0;
-    socials.style.transform = "translateX(-50%) translateY(20px)";
-  }
-});
-</script>
-</body>
-</html>
+    scrollText.style.transform="translate(-
