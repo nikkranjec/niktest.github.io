@@ -89,6 +89,26 @@
     text-transform: lowercase;
   }
 
+  /* Homepage button */
+  #homeButton {
+    position: fixed;
+    top: 20px;
+    left: 30px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ccc;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    pointer-events: auto;
+    text-decoration: none;
+  }
+  #homeButton.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* Scroll-triggered text */
   .scroll-text-container {
     position: fixed;
@@ -141,10 +161,9 @@
     line-height: 1.6;
     opacity: 0;
     transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    white-space: normal;
     text-align: justify;
-    word-break: normal;
-    overflow-wrap: break-word;
+    overflow-wrap: normal; /* don’t break words */
+    word-break: keep-all;  /* keep whole words */
   }
   .decrypted-char { display: inline-block; white-space: pre; }
 
@@ -210,6 +229,9 @@
   </div>
   <div class="element element-text" style="top:42%; left:43%;" id="elem3">nik kranjec</div>
 </div>
+
+<!-- Homepage Button -->
+<a href="https://nikkranjec.com/niktest.github.io/index.html" id="homeButton">homepage</a>
 
 <!-- Scroll-triggered text -->
 <div class="scroll-text-container" id="scrollText">
@@ -279,6 +301,16 @@ function updateParallax() {
   });
 }
 window.addEventListener('scroll', updateParallax);
+
+/* ------------------ Homepage button fade in ------------------ */
+const homeButton = document.getElementById("homeButton");
+window.addEventListener("scroll", () => {
+  if(window.scrollY > 100){
+    homeButton.classList.add("visible");
+  } else {
+    homeButton.classList.remove("visible");
+  }
+});
 
 /* ------------------ Scroll-triggered "reincarnated" text ------------------ */
 const scrollText = document.getElementById("scrollText");
