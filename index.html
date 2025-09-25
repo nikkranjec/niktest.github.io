@@ -32,23 +32,27 @@
 
   .element {
     position: absolute;
-    transition: transform 0.2s ease-out;
-    /* Per-element controls */
-    --base-scale: 1;     /* numeric (no unit) */
-    --base-rotate: -20;    /* degrees (numeric) */
-    --scroll-rotate: 0;  /* degrees per pixel of scroll (numeric) */
+    transition: transform 0.3s ease-out, opacity 1.2s ease-out;
+    --base-scale: 1; 
+    --base-rotate: 0; 
+    --scroll-rotate: 0; 
+    opacity: 0;                
+    transform: translateY(20px);
   }
 
-  /* Example custom scales/rotations (tweak freely) */
-  #elem1 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: -0.01; }
-  #elem2 { --base-scale: 0.9; --base-rotate: -15; --scroll-rotate: 0.005;   }
-  #elem3 { --base-scale: 1; --base-rotate: -15;  --scroll-rotate: 0.007;  }
-  #elem4 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.003;  }
-  #elem5 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.012;  }
-  #elem6 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.008;  }
-  #elem7 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.006;  }
-  #elem8 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.004;  }
-  #elem9 { --base-scale: 0.3; --base-rotate: -15;  --scroll-rotate: 0.01;  }
+  .element.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Example custom base scales */
+  #elem1 { --base-scale: 0.8; }
+  #elem2 { --base-scale: 1.1; }
+  #elem4 { --base-scale: 0.9; }
+
+  /* Example custom rotations */
+  #elem6 { --base-rotate: -2; }
+  #elem7 { --base-rotate: 1.5; --scroll-rotate: 0.02; }
 
   .img-wrapper {
     pointer-events: auto;
@@ -66,12 +70,10 @@
     will-change: transform;
   }
 
-  /* hover scale on the image only */
   .img-wrapper img:hover {
     transform: scale(1.12);
   }
 
-  /* gentle float animation (wiggle) */
   @keyframes float {
     0% { transform: translateY(0px) rotate(-0.6deg); }
     50% { transform: translateY(-8px) rotate(0.6deg); }
@@ -183,35 +185,27 @@
   <div class="element" style="top:20%; left:33%;" id="elem2">
     <div class="img-wrapper"><img src="magazine.webp" alt="magazine"></div>
   </div>
-
   <div class="element" style="top:5%; left:50%;" id="elem4">
     <div class="img-wrapper"><img src="cacao.webp" alt="cacao"></div>
   </div>
-
   <div class="element" style="top:45%; left:20%;" id="elem1">
     <div class="img-wrapper"><img src="Nik Muvit.webp" alt="muvit"></div>
   </div>
-
   <div class="element" style="top:-7%; left:24%;" id="elem5">
     <div class="img-wrapper"><img src="nik barcelona.webp" alt="barcelona"></div>
   </div>
-
   <div class="element" style="top:20%; left:12%;" id="elem6">
     <div class="img-wrapper"><img src="liza.webp" alt="liza"></div>
   </div>
-
   <div class="element" style="top:48%; left:38%;" id="elem7">
     <div class="img-wrapper"><img src="kolo.webp" alt="kolo"></div>
   </div>
-
   <div class="element" style="top:30%; left:53%;" id="elem8">
     <div class="img-wrapper"><img src="lips.webp" alt="love in plane sight"></div>
   </div>
-
   <div class="element" style="top:-20%; left:40%;" id="elem9">
     <div class="img-wrapper"><img src="eve.webp" alt="eve"></div>
   </div>
-
   <div class="element element-text" style="top:45%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
@@ -229,7 +223,7 @@
   </span>
 </div>
 
-<!-- Social buttons container -->
+<!-- Social buttons -->
 <div id="socialsContainer">
   <a href="https://www.instagram.com/nikkranjec/" class="social-btn" target="_blank"><img src="instagram.png" alt="Instagram"></a>
   <a href="https://www.tiktok.com/@nikkranjec" class="social-btn" target="_blank"><img src="tiktok.png" alt="TikTok"></a>
@@ -242,7 +236,7 @@
 <canvas class="noise-overlay" id="noiseCanvas"></canvas>
 
 <script>
-/* ------------------ Parallax scrolling (+ base scale & rotation) ------------------ */
+/* ------------------ Parallax scrolling with scale + rotation ------------------ */
 const elements = [
   {el: document.getElementById('elem1'), speed: 0.5},
   {el: document.getElementById('elem2'), speed: 0.35},
@@ -255,30 +249,34 @@ const elements = [
   {el: document.getElementById('elem9'), speed: 0.34},
 ];
 
-/* different float offsets so they don't sync perfectly */
 elements.forEach(({el})=>{
   const wrapper = el.querySelector('.img-wrapper');
   if(wrapper) wrapper.style.animationDelay = `${(Math.random()*2).toFixed(2)}s`;
 });
 
+/* fade in on load */
+window.addEventListener('load', () => {
+  elements.forEach(({el}, index) => {
+    setTimeout(() => {
+      el.classList.add('visible');
+      updateParallax(); 
+    }, 200 + index * 150);
+  });
+});
+
 function updateParallax() {
   const scrollY = window.scrollY;
-  elements.forEach(({el, speed}) => {
-    const scaleFactor = Math.max(0.5, 1 - scrollY * 0.0005);
+  elements.forEach(({el, speed})=>{
+    const scaleFactor = Math.max(0.5,1-scrollY*0.0005);
     const baseScale   = parseFloat(getComputedStyle(el).getPropertyValue('--base-scale')) || 1;
-
-    const baseRotate  = parseFloat(getComputedStyle(el).getPropertyValue('--base-rotate')) || 0;   // deg
-    const scrollRot   = parseFloat(getComputedStyle(el).getPropertyValue('--scroll-rotate')) || 0; // deg per px
+    const baseRotate  = parseFloat(getComputedStyle(el).getPropertyValue('--base-rotate')) || 0;
+    const scrollRot   = parseFloat(getComputedStyle(el).getPropertyValue('--scroll-rotate')) || 0;
     const rotateDeg   = baseRotate + scrollY * scrollRot;
-
     const translateY  = -scrollY * speed;
-
-    /* Order matters: translate -> rotate -> scale for natural feel */
-    el.style.transform = `translateY(${translateY}px) rotate(${rotateDeg}deg) scale(${baseScale * scaleFactor})`;
+    el.style.transform=`translateY(${translateY}px) rotate(${rotateDeg}deg) scale(${baseScale * scaleFactor})`;
   });
 }
 window.addEventListener('scroll', updateParallax);
-window.addEventListener('load',  updateParallax); // apply immediately on load
 
 /* ------------------ Scroll-triggered "reincarnated" text ------------------ */
 const scrollText = document.getElementById("scrollText");
