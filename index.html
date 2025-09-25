@@ -162,10 +162,15 @@
     opacity: 0;
     transition: opacity 0.4s ease-out, transform 0.4s ease-out;
     text-align: justify;
-    word-break: normal;        /* don’t break words */
-    overflow-wrap: break-word; /* wrap long words if needed */
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: keep-all; /* keep whole words */
   }
-  .decrypted-char { display: inline; white-space: normal; }
+  .word {
+    display: inline-block;
+    margin-right: 6px; /* space between words */
+    white-space: nowrap;
+  }
 
   /* social buttons */
   #socialsContainer {
@@ -314,7 +319,7 @@ window.addEventListener("scroll", () => {
 
 /* ------------------ Scroll-triggered "reincarnated" text ------------------ */
 const scrollText = document.getElementById("scrollText");
-const words = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
+const wordsScroll = [document.getElementById("word1"),document.getElementById("word2"),document.getElementById("word3")];
 const appearStart=500,appearEnd=800,disappearStart=1500,disappearEnd=1800,moveDistance=40;
 
 window.addEventListener("scroll", ()=>{
@@ -322,25 +327,25 @@ window.addEventListener("scroll", ()=>{
   if(scrollY<appearStart){
     scrollText.style.opacity=0;
     scrollText.style.transform=`translate(-50%,${moveDistance}px)`;
-    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
+    wordsScroll.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
   } else if(scrollY>=appearStart && scrollY<=appearEnd){
     const progress=(scrollY-appearStart)/(appearEnd-appearStart);
     scrollText.style.opacity=progress;
     scrollText.style.transform=`translate(-50%,${moveDistance*(1-progress)}px)`;
-    words.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
+    wordsScroll.forEach(w=>{w.style.opacity=progress; if(w.id==="word3") w.classList.add("animate-font");});
   } else if(scrollY>appearEnd && scrollY<disappearStart){
     scrollText.style.opacity=1;
     scrollText.style.transform="translate(-50%,0)";
-    words.forEach(w=>{w.style.opacity=1; if(w.id==="word3") w.classList.add("animate-font");});
+    wordsScroll.forEach(w=>{w.style.opacity=1; if(w.id==="word3") w.classList.add("animate-font");});
   } else if(scrollY>=disappearStart && scrollY<=disappearEnd){
     const progress=1-(scrollY-disappearStart)/(disappearEnd-disappearStart);
     scrollText.style.opacity=progress;
     scrollText.style.transform=`translate(-50%,${-moveDistance*(1-progress)}px)`;
-    words.forEach(w=>{w.style.opacity=progress;});
+    wordsScroll.forEach(w=>{w.style.opacity=progress;});
   } else{
     scrollText.style.opacity=0;
     scrollText.style.transform=`translate(-50%,${-moveDistance}px)`;
-    words.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
+    wordsScroll.forEach(w=>{w.style.opacity=0; w.classList.remove("animate-font");});
   }
 });
 
@@ -362,30 +367,54 @@ function generateNoise(){
 function loopNoise(){generateNoise(); requestAnimationFrame(loopNoise);}
 loopNoise();
 
-/* ------------------ Paragraph decryption ------------------ */
+/* ------------------ Paragraph decryption (word-based) ------------------ */
 const paragraph = document.getElementById("paragraphContainer");
 const decryptedEl = document.getElementById("decryptedText");
 const textContent = decryptedEl.innerText.trim();
 decryptedEl.innerHTML = "";
-const chars = [];
-for (let c of textContent) {
+
+const words = textContent.split(" ").map(word => {
   const span = document.createElement("span");
-  span.className = "decrypted-char";
-  span.textContent = c===" " ? "\u00A0": c;
+  span.className = "word";
+  span.dataset.word = word;
+  span.textContent = word; // fallback text
   decryptedEl.appendChild(span);
-  chars.push(span);
+  return span;
+});
+
+/* scramble helper */
+function scrambleWord(word) {
+  let scrambled = "";
+  for (let i=0; i<word.length; i++) {
+    scrambled += String.fromCharCode(33 + Math.floor(Math.random()*94));
+  }
+  return scrambled;
 }
 
 function decryptOnce() {
-  let progress=0;
-  const interval = setInterval(()=>{
-    chars.forEach((ch,i)=>{
-      if(i<=progress) ch.textContent = textContent[i]===" " ? "\u00A0" : textContent[i];
-      else ch.textContent = String.fromCharCode(33 + Math.floor(Math.random()*94));
-    });
-    progress++;
-    if(progress>=chars.length) clearInterval(interval);
-  },30);
+  let wordIndex = 0;
+  function revealWord() {
+    const span = words[wordIndex];
+    let progress = 0;
+    const target = span.dataset.word;
+
+    const interval = setInterval(()=>{
+      let scrambled = "";
+      for (let i=0; i<target.length; i++) {
+        if(i <= progress) scrambled += target[i];
+        else scrambled += String.fromCharCode(33 + Math.floor(Math.random()*94));
+      }
+      span.textContent = scrambled;
+      progress++;
+      if(progress >= target.length) {
+        clearInterval(interval);
+        span.textContent = target;
+        wordIndex++;
+        if(wordIndex < words.length) setTimeout(revealWord, 80);
+      }
+    }, 40);
+  }
+  revealWord();
 }
 
 /* ------------------ Paragraph scroll animation ------------------ */
