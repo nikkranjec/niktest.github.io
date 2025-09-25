@@ -162,13 +162,10 @@
     opacity: 0;
     transition: opacity 0.4s ease-out, transform 0.4s ease-out;
     text-align: justify;
-    overflow-wrap: normal;
-    word-break: keep-all;
+    word-break: normal;        /* don’t break words */
+    overflow-wrap: break-word; /* wrap long words if needed */
   }
-  .decrypted-char {
-    display: inline;   /* FIX: let words wrap naturally */
-    white-space: pre;  /* preserve spaces */
-  }
+  .decrypted-char { display: inline; white-space: normal; }
 
   /* social buttons */
   #socialsContainer {
@@ -230,11 +227,11 @@
   <div class="element" style="top:-3%; left:37%;" id="elem9">
     <div class="img-wrapper"><img src="eve.webp" alt="eve"></div>
   </div>
-  <div class="element element-text" style="top:42%; left:43%;" id="elem3">nikkranjec</div>
+  <div class="element element-text" style="top:42%; left:43%;" id="elem3">nik kranjec</div>
 </div>
 
 <!-- Homepage Button -->
-<a href="https://nikkranjec.com/niktest.github.io/index.html" id="homeButton">nikkranjec</a>
+<a href="https://nikkranjec.com/niktest.github.io/index.html" id="homeButton">homepage</a>
 
 <!-- Scroll-triggered text -->
 <div class="scroll-text-container" id="scrollText">
